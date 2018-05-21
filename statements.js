@@ -1,11 +1,17 @@
 var properties = [];
 var objects = {};
 var csvArr = [];
-var LABELS = ['Dde', 'Ade', 'Lde', 'Den', 'Aen', 'Len'];
+
 var INIT = true;
 var queries=[];
 var requery=false;
 var LANGUAGE="de";
+if (LANGUAGE!="en"){
+	var LABELS = ['D'+LANGUAGE, 'A'+LANGUAGE, 'L'+LANGUAGE, 'Den', 'Aen', 'Len'];
+}
+else{
+	var LABELS = [ 'Den', 'Aen', 'Len'];	
+}
 var CELLS=[];
 csvdata=true;
 
@@ -623,7 +629,7 @@ function lookup(id, searchTerm = "", popupContent = "") {
         searchTerm = searchTerm.split(" ").join(" ");
         //base_url='https://www.wikidata.org/w/api.php?sroffset=0&format=json&callback=%3F&list=search&srlimit=100&srsearch='+encodeURI(searchTerm)+'&action=query&origin=*';
         //base_url='https://www.wikidata.org/w/api.php?action=wbsearchentities&search='+encodeURI(searchTerm)+'&language=de&limit=50&format=json&origin=*'
-        base_url = 'https://www.wikidata.org/w/api.php?format=json&action=wbsearchentities&search=' + encodeURI(searchTerm) + '&limit=50&language=de&uselang=de&origin=*';
+        base_url = 'https://www.wikidata.org/w/api.php?format=json&action=wbsearchentities&search=' + encodeURI(searchTerm) + '&limit=50&language='+LANGUAGE+'&uselang='+LANGUAGE+'&origin=*';
         url = base_url;
     } else {
         base_url = 'https://query.wikidata.org/sparql';
@@ -661,20 +667,20 @@ function lookup(id, searchTerm = "", popupContent = "") {
 						WHERE\
 						{\
 						  bind(<http://www.wikidata.org/entity/' + p + '> as ?p).\
-						?p rdfs:label ?pLabel FILTER (LANG (?pLabel) = "de").\
+						?p rdfs:label ?pLabel FILTER (LANG (?pLabel) = "'+LANGUAGE+'").\
 						?p rdf:type wikibase:Property .\
 						?p wikibase:propertyType ?pType .\
-						?p schema:description ?pDescription FILTER (LANG (?pDescription) = "de").\
+						?p schema:description ?pDescription FILTER (LANG (?pDescription) = "'+LANGUAGE+'").\
 						}'
             } else {
                 properties[column]['source'] = false;
                 query = "SELECT DISTINCT ?p ?pLabel ?pDescription ?pType \
 						WHERE\
 						{\
-						?p rdfs:label '" + csvArr[0][column] + "'@de.\
+						?p rdfs:label '" + csvArr[0][column] + "'@"+LANGUAGE+".\
 						?p rdf:type wikibase:Property .\
 						?p wikibase:propertyType ?pType .\
-						SERVICE wikibase:label { bd:serviceParam wikibase:language \"de\" }	\
+						SERVICE wikibase:label { bd:serviceParam wikibase:language \""+LANGUAGE+"\" }	\
 						}"
 
             }
@@ -693,7 +699,7 @@ function lookup(id, searchTerm = "", popupContent = "") {
                 } else {
                     query = 'SELECT DISTINCT ?item ?itemLabel ?itemDescription \
 					WHERE{bind(wd:' + csvArr[row][column] + ' as ?item). \
-					SERVICE wikibase:label { bd:serviceParam wikibase:language "de" } \
+					SERVICE wikibase:label { bd:serviceParam wikibase:language "'+LANGUAGE+'" } \
 					}'
                     objects[csvArr[row][column]] = "";
 
