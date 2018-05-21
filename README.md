@@ -1,11 +1,13 @@
 # WDstatements
 
 ---
-*Sorry but this is not the nicest piece of code. But it seems to work. So feel free to imporove.*
+---
+Sorry, this is not the nicest piece of code. However it seems to work. Feel free to improve.
+---
 ---
 
 ## What is this? 
-This ia a helper tool to preprocessing data which will later be add to Wikidata using QuickStatements (https://tools.wmflabs.org/wikidata-todo/quick_statements.php).
+*WDstatemenmts* ia a helper tool to preprocessing data which will later be add to Wikidata using QuickStatements (https://tools.wmflabs.org/wikidata-todo/quick_statements.php).
 *QuickStatements* can add statements (with optional qualifiers and sources) to Wikidata items.
 
 ## Why this?
