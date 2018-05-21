@@ -5,17 +5,17 @@ Sorry, this is not the nicest piece of code. However it seems to work. Feel free
 
 # WDstatements
 ## What is this? 
-*WDstatemenmts* ia a helper tool to preprocessing data which will later be add to Wikidata using QuickStatements (https://tools.wmflabs.org/wikidata-todo/quick_statements.php).
-*QuickStatements* can add statements (with optional qualifiers and sources) to Wikidata items.
+*WDstatements* ia a helper tool for pre-processing data which will later be added to Wikidata using QuickStatements (https://tools.wmflabs.org/wikidata-todo/quick_statements.php).
+*QuickStatements* can add statements (with optional qualifiers and sources) to Wikidata items via a batch mode.
 
 ## Why this?
-Even if *QuickStatements* is very powerful however it requires a careful preparation of input data. *WDstatements* helps to create a string which you can copy&paste into the *QuickStatements* interface.
+Even if *QuickStatements* is very powerful however it requires a careful preparation of input data. *WDstatements* will create a string which you can later copy&paste into the *QuickStatements* interface.
 
 ## Language Note	
-The tool has been preconfigurated for the use of German labels and descriptions. Please change the line *var LANGUAGE="de";* if you prefer another language.
+The tool has been pre-configurated for the use of German labels and descriptions. Please change the line *var LANGUAGE="de";* inside the javascript file if you prefer another language.
 
-## Does WDstatements has any requirements?
-Yes, it has. But it should be much easier to fulfil these requirements than those of QUickStatements.
+## Does WDstatements need to comply with any requirements?
+Yes, it need. But it should be much easier to comply with these requirements than those of QuickStatements.
 - Raw data must have csv format. Alternatly you can copy&paste some cells from your calc application like Open Office Calc, MS Excel, Google Calc, Gnumeric, etc.
 - The first column must have the title *item* (in lower case). The cells in this columns contain *subject* (semantically spoken). This could be a known Wikidata object (like *Q42*) or a String (like *Douglas Adams*).
 - All other column titles must be named after a valid property with {German} label (like *ist ein(e)*) or the property code (like "P31" in Upper case).
@@ -29,7 +29,7 @@ Yes, it has. But it should be much easier to fulfil these requirements than thos
 - Quantity statements and coordinates are not yet implemented. Sorry for that.
 
 ## How to use?
-- Just store the unzipped folder somewhere where you may find it again later. Then open the file *statements.html* in your broser. It has been tested in current versions of Firefox and Chrome.
+- Just download the code store the unzipped folder somewhere where you may find it later again. Then open the file *statements.html* in your broser. It has been tested in current versions of Firefox and Chrome.
 - Open the input csv file or cope&paste the data from your tab calc application. Then click on "ProcessData"!
 - Now just wait and see. The tool tries to lookup for WikibaseItems. You will see a count down in the upper left corner.
 - Usually this will end with a message that a number of items still need be specified.
