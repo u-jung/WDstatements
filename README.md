@@ -34,18 +34,18 @@ Yes, it has. But it should be much easier to fulfil these requirements than thos
 - Now just wait and see. The tool tries to lookup for WikibaseItems. You will see a count down in the upper left corner.
 - Usually this will end with a message that a number of items still need be specified.
 - You will now see cells in different colors. 
-	..* Green: The cell is ready. There is nothing more to do.
-	..* Red: The tool has found some WikibaseItems which could match the label. Left click on the label to select the right one. 
-		...* If you don't see a list, click on "requery"! (The list will be visible only at the first appearance of the label)
-		...* If you see your item, click on it. The label will change by the item code and become green.
-		...* If you can't find your item, click on "create"!. The label color will change to blue.
-		...* If you believe that the provided label has some errors, click on "Modify this" and change the label. After this, left click on "Requery"! You can also enter the Wikidata code of the item as a short way solution. If you use "Modify all", all labels with the same title will be modified at the same way. Be careful with this option!
-		...* If you want to ignore the information click on "Hide". The label color will change to grey. If you hide the item at the first column, then the entire item will be ignored. Otherwise it's just one claim who will be ignored.
-	..* Blue: The tool didn't find a matching item label item. The item will be created.
-	..* Hide: You decided to hide this information.
+	- Green: The cell is ready. There is nothing more to do.
+	- Red: The tool has found some WikibaseItems which could match the label. Left click on the label to select the right one. 
+		- If you don't see a list, click on "requery"! (The list will be visible only at the first appearance of the label)
+		- If you see your item, click on it. The label will change by the item code and become green.
+		- If you can't find your item, click on "create"!. The label color will change to blue.
+		- If you believe that the provided label has some errors, click on "Modify this" and change the label. After this, left click on "Requery"! You can also enter the Wikidata code of the item as a short way solution. If you use "Modify all", all labels with the same title will be modified at the same way. Be careful with this option!
+		- If you want to ignore the information click on "Hide". The label color will change to grey. If you hide the item at the first column, then the entire item will be ignored. Otherwise it's just one claim who will be ignored.
+	- Blue: The tool didn't find a matching item label item. The item will be created.
+	- Hide: You decided to hide this information.
 - You now need to change all cell labels into green, blue or grey color. After this click on "Start output for QuickStatements"!
-	..* If you have a blue label in another than the firt column you will be asked to first create these item using QuickStatements. Do so and requery than the blue labels again.
-	..* If you don't have blue labels or if the blue labels are only in the first column you will now get a result string which you can copy&paste into QuickStatements. 
+	- If you have a blue label in another than the firt column you will be asked to first create these item using QuickStatements. Do so and requery than the blue labels again.
+	- If you don't have blue labels or if the blue labels are only in the first column you will now get a result string which you can copy&paste into QuickStatements. 
 
 **Please check the result string carefully before you may paste it into the QuickStatements interface, because nobody is perfect!**
  
