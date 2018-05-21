@@ -6,6 +6,7 @@ var INIT = true;
 var queries=[];
 var requery=false;
 var LANGUAGE="de";
+var CELLS=[];
 csvdata=true;
 
 console.log("ok");
@@ -157,7 +158,7 @@ function startOutput() {
     //createArr=removeDuplicates(createArr);
 	console.log(createArr);
 	uStr=sortCreateArr(createArr);
-
+	uStr=uStr.replace(/CREATE\nQ/gm, "Q");
 	openTextarea(uStr);
     //openTextarea(createStr);
     return
@@ -321,7 +322,9 @@ function addChildren(row, i) {
                         if (properties[j]['parent'] == parent) {
                             console.log('child has parent');
                             if ((jQuery('#' + row + '-' + i).text() != "") && (jQuery('#' + row + '-' + i).attr('class') == 'td ok')) {
-                                returnStr += '\t' + properties[j]['p'] + '\t' + quote(jQuery('#' + row + '-' + j).text(), j);
+								if (jQuery('#' + row + '-' + j).text()!=""){
+									returnStr += '\t' + properties[j]['p'] + '\t' + quote(jQuery('#' + row + '-' + j).text(), j);
+								}
                             }
                         }
                     }
@@ -338,7 +341,12 @@ function quote(text, i) {
 		return '"'+text+'"';
 	}
     if (['Monolingualtext','String','Url', 'ExternalId'].indexOf(properties[i]['type'])>-1) {
-        return '"' + text + '"';
+		if (['Monolingualtext'].indexOf(properties[i]['type'])>-1) {
+			return LANGUAGE+':"' + text + '"';
+		}
+		else{
+			return '"' + text + '"';
+		}
     } else {
         return text;
     }
@@ -409,6 +417,9 @@ function fillDIV() {
 
     checkCells();
 }
+
+
+
 
 function checkCells() {
 	k=0;
@@ -501,6 +512,10 @@ function processData(icd10Codes) {
         csvArr = [];
         return;
     }
+    else{
+		console.log ("Make sure that the first column is called 'item'");
+
+	}
 
     fillDIV();
 
@@ -619,8 +634,8 @@ function lookup(id, searchTerm = "", popupContent = "") {
                 properties[column]['parent'] = pArr[0];
                 
                 for (k = 0; k < properties.length; k++) {
-                    console.log(properties[k]['originalLabel'], pArr[0]);
-                    if (properties[k]['originalLabel'] == pArr[0]) {
+                    console.log(properties[k]['originalLabel'], pArr[0] );
+                    if (properties[k]['originalLabel'] == pArr[0] || properties[k]['p']==pArr[0]) {
                         if (!('children' in properties[k])) {
                             properties[k]['children'] = [pArr[1]];
                         } else {
