@@ -14,7 +14,6 @@ else{
 }
 var CELLS=[];
 csvdata=true;
-
 console.log("ok");
 
 jQuery(document).ready(function() {
@@ -236,18 +235,12 @@ function orderCreateArr(createArr){
 				tmpArr.push(createArr[i]);
 			}
 		}
-		
-		
-		
-		
 	}
 	tmpArr=removeDuplicates(tmpArr);
 	return tmpArr;
-	
 	}
 	
 function removeDuplicates(tmpArr){
-	
 	  var result = [];
 	  jQuery.each(tmpArr, function(i, e) {
 		if (jQuery.inArray(e, result) == -1 || e=="CREATE") result.push(e);
@@ -383,7 +376,6 @@ function addSources(row,i) {
 
 
 function fillDIV() {
-
     header = ""
     for (j = 0; j < csvArr.length; j++) {
         row = ""
@@ -405,22 +397,15 @@ function fillDIV() {
                 if (properties[i]['type'] == 'Time') {
                     //checkType(j+'-'+i);
                 }
-
             }
-
         }
-
         console.log(jQuery('#output').text());
         jQuery('#output').append('<div class="tr">' + row + '</tr>');
     }
 
-
-
-
     jQuery('.table').on('click', '.td', function(event) {
         confirm(event, jQuery(this).attr("id"))
     });
-
     checkCells();
 }
 
@@ -430,9 +415,6 @@ function fillDIV() {
 function checkCells() {
 	k=0;
     counter = csvArr.length * csvArr[0].length;
-    
-
-    
     for (j = 0; j < csvArr.length; j++) {
         for (col = 0; col < csvArr[0].length; col++) {
 			if(jQuery('#' + j + '-' + col).text()=='undefined'){
@@ -457,9 +439,7 @@ function checkCells() {
             }
             jQuery('#counter').text(counter--);
             confirmExec(j + '-' + col);
-			
         }
-
     }
     INIT = false;
     jQuery('#popup').css("display", 'none');
@@ -477,12 +457,9 @@ function confirm(event, id) {
 }
 
 function confirmExec(id,force=false) {
-
     jQuery('#popup').css("display", 'block');
-
     jQuery('#popup').html("");
     jQuery('#popup').prepend(jQuery("<div/>").attr("id", "choice").attr("size", "13"));
-
     jQuery('#choice').append(jQuery('<li/>').html('<strong title="HIDE" style="color:brown;">HIDE </strong>'));
     jQuery('#choice').append(jQuery('<li/>').html('<strong title="MODIFYTHIS" style="color:brown;">MODIFY THIS</strong>'));
     jQuery('#choice').append(jQuery('<li/>').html('<strong title="MODIFYALL" style="color:brown;">MODIFY ALL</strong>'));
@@ -502,9 +479,6 @@ function confirmExec(id,force=false) {
         jQuery('#' + id).attr('value', jQuery('#popup').html());
     }
     jQuery('#choice strong').off;
-
-
-
     jQuery('#choice').on("click", 'strong', function() {
         changeDiv(id, jQuery(this).attr('title'), jQuery(this).parent().text())
     });
@@ -520,12 +494,8 @@ function processData(icd10Codes) {
     }
     else{
 		console.log ("Make sure that the first column is called 'item'");
-
 	}
-
     fillDIV();
-
-
 }
 
 function processJSON(jsonArr){
@@ -534,22 +504,17 @@ function processJSON(jsonArr){
 	console.log(csvArr);
 	csvArr[0]=['item'];
 	offset=0;
-	
 	nextCsvLine=1;
-
 	item=""
 	console.log(jsonArr.length);
 	for (i=0;i<jsonArr.length;i++){
-		
 		console.log(jsonArr[i]);
 		csvArr[nextCsvLine]=[];
 		jQuery.each(jsonArr[i],function(k,v){
 			if(k=="item"){item=v};
 		});
-		
 		jQuery.each(jsonArr[i],function(k,v){
 			console.log(k,v);
-			
 			kArr=k.split("|");
 			if(kArr.length==1){
 				csvArr[nextCsvLine][getColumn(kArr[0])]=v;
@@ -567,8 +532,6 @@ function processJSON(jsonArr){
 			}
 
 		});
-
-		
 		console.log(i,csvArr);
 		nextCsvLine=offset+1+nextCsvLine;
 		console.log(i, nextCsvLine);
@@ -587,7 +550,6 @@ function getColumn(property){
 	}
 	csvArr[0].push(property);
 	return csvArr[0].length - 1;
-	
 }
 
 function readCSV() {
@@ -603,7 +565,6 @@ function readCSV() {
 
 function inputCSV() {
     openTextarea();
-	
 }
 
 function openTextarea(content = "") {
@@ -618,17 +579,12 @@ function openTextarea(content = "") {
 };
 
 function lookup(id, searchTerm = "", popupContent = "") {
-
     query = ""
     column = id.split("-")[1];
     row = id.split("-")[0];
     console.log('lookup', id, searchTerm, popupContent);
-
-
     if (searchTerm.length > 0) {
         searchTerm = searchTerm.split(" ").join(" ");
-        //base_url='https://www.wikidata.org/w/api.php?sroffset=0&format=json&callback=%3F&list=search&srlimit=100&srsearch='+encodeURI(searchTerm)+'&action=query&origin=*';
-        //base_url='https://www.wikidata.org/w/api.php?action=wbsearchentities&search='+encodeURI(searchTerm)+'&language=de&limit=50&format=json&origin=*'
         base_url = 'https://www.wikidata.org/w/api.php?format=json&action=wbsearchentities&search=' + encodeURI(searchTerm) + '&limit=50&language='+LANGUAGE+'&uselang='+LANGUAGE+'&origin=*';
         url = base_url;
     } else {
@@ -638,7 +594,6 @@ function lookup(id, searchTerm = "", popupContent = "") {
             console.log(pArr);
             if (pArr.length > 1) {
                 properties[column]['parent'] = pArr[0];
-                
                 for (k = 0; k < properties.length; k++) {
                     console.log(properties[k]['originalLabel'], pArr[0] );
                     if (properties[k]['originalLabel'] == pArr[0] || properties[k]['p']==pArr[0]) {
@@ -682,13 +637,11 @@ function lookup(id, searchTerm = "", popupContent = "") {
 						?p wikibase:propertyType ?pType .\
 						SERVICE wikibase:label { bd:serviceParam wikibase:language \""+LANGUAGE+"\" }	\
 						}"
-
             }
 
         } else {
             //console.log(csvArr[row][column], row, column);		
             regex = /^Q[0-9]*$/g
-
             test = regex.test(csvArr[row][column]);
             if (test == true) {
                 test = csvArr[row][column] in objects;
@@ -702,7 +655,6 @@ function lookup(id, searchTerm = "", popupContent = "") {
 					SERVICE wikibase:label { bd:serviceParam wikibase:language "'+LANGUAGE+'" } \
 					}'
                     objects[csvArr[row][column]] = "";
-
                 }
             } else {
                 return;
@@ -710,13 +662,9 @@ function lookup(id, searchTerm = "", popupContent = "") {
         }
         url = base_url + "?format=json&query=" + encodeURI(query);
     }
-
-
-
     console.log(url);
     newQuery=true;
     if (requery){
-		
 	}
 	else{
 		requery=false;
@@ -731,25 +679,13 @@ function lookup(id, searchTerm = "", popupContent = "") {
 			return;
 		}
 	}
-    
     queries.push(url);
-    
-    /*jQuery.get(url,
-    function(data, status){
-    	WdResponse(data['results']['bindings'],id, csvArr);
-    	
-    }).fail(function(){console.log("error")});*/
     jQuery.ajax({
         url: url,
-        //headers: {'accept':'application/sparql-results+json'},
         success: function(data) {
             if (searchTerm.length > 0) {
                 console.log(data);
-                /*dataStr=data.slice(5,data.length-1)
-                console.log(dataStr);
-                data=JSON.parse(dataStr);*/
                 data = data['search'];
-
             } else {
                 data = data['results']['bindings'];
             }
@@ -757,8 +693,6 @@ function lookup(id, searchTerm = "", popupContent = "") {
         },
         async: false
     });
-
-
     return (query);
 }
 
@@ -768,12 +702,10 @@ function WdResponse(data, id, searchTerm) {
     row = id.split("-")[0];
     console.log(data, searchTerm, row, column);
     sourceText=jQuery('#'+row+'-'+column).text();
-
     if (searchTerm.length > 0) {
         jQuery('#choice').off;
         for (i = 0; i < data.length; i++) {
             snippet = '<strong title="' + data[i]['title'] + '">' + data[i]['label'] + ' </strong>(<a href="' + data[i]['concepturi'] + '" target="_blank">' + data[i]['title'] + "</a>)<i> -> " + data[i]['description'] + "</i>  ";
-
             jQuery('#choice').append(jQuery('<li/>').html(snippet)).css('color', 'black');
         };
         console.log(data.length);
@@ -782,10 +714,7 @@ function WdResponse(data, id, searchTerm) {
         if (data.length==0){
 			 changeDiv(id, "CREATE", "") ;
 		}
-        //html=jQuery('#choice').html();
         //console.log(html);
- 
-
         jQuery('#choice').on("click", 'strong', function() {
             changeDiv(id, jQuery(this).attr('title'), jQuery(this).parent().text())
         });
@@ -808,19 +737,16 @@ function WdResponse(data, id, searchTerm) {
 
         jQuery('#' + id).text(properties[column]['p']);
     } else {
-
         jQuery('#' + id).attr('title', data[0]['itemLabel']['value'] + ' (' + data[0]['itemDescription']['value'] + ') ');
         jQuery('#' + id).attr("class", "td ok");
         checkEquals(id,jQuery('#' + id).text(),sourceText);
         checkType(id);
     }
-
 }
 
 function changeDiv(id, targetText, targetTitle) {
 	console.log(id,"|", targetText, "|",targetTitle);
 	sourceText=jQuery('#' + id).text();
-
     jQuery('#popup').css("display", 'none');
     if (targetText == "HIDE") {
         jQuery('#' + id).attr('class', 'td hide');
@@ -835,8 +761,6 @@ function changeDiv(id, targetText, targetTitle) {
         if (targetText != null || targetText == "") {
 			jQuery('#' + id).text(targetText);
             checkEquals(id, jQuery('#' + id).text(), sourceText);
-
-
         }
         jQuery('#' + id).attr('class','td nogo');
         checkType(id);
@@ -896,60 +820,46 @@ function changeDiv(id, targetText, targetTitle) {
 
 
 function checkEquals(id, targetText = "", surceText="") {
-    //sourceText = jQuery('#' + id).text();
-    //if (targetText != "") {
-      //  sourceText = targetText;
-    //}
-	
     targetTitle = jQuery('#' + id).attr("title");
     targetClass = jQuery('#' + id).attr('class');
     targetValue = jQuery('#' + id).attr('value');
     for (row = 1; row < jQuery('.tr').length; row++) {
         for (column = 0; column < properties.length; column++) {
-			    
             if (jQuery('#' + row + '-' + column).text() == sourceText) {
 				jQuery('#' + row + '-' + column).text(targetText);
                 jQuery('#' + row + '-' + column).attr('title', targetTitle);
                 jQuery('#' + row + '-' + column).attr('class', targetClass);
                 jQuery('#' + row + '-' + column).attr('value', targetValue);
             }
-            
         }
     }
-
 }
 
 
 function checkType(id) {
     if (['td hide', 'td create'].indexOf(jQuery('#' + id).attr('class')) > -1) {
-
         return true;
     }
     if (jQuery('#' + id.split('-')[0] + '-0').attr('class') == 'td hide') {
         jQuery('#' + id).attr('class', 'td hide');
         return true;
     }
-
     column = id.split("-")[1];
     row = id.split("-")[0];
     text = jQuery('#' + id).text();
-
     type = properties[column]['type'];
     check = false;
-
     if (LABELS.indexOf(properties[column]['originalLabel']) > -1) {
         type = 'String';
     }
     if (properties[column]['originalLabel'] == 'item') {
         type = 'WikibaseItem';
     }
-
     if (row == 0) {
         return false;
     }
     switch (type) {
         case 'WikibaseItem':
-
             regex = /^Q[0-9]*$/g
             if (regex.test(text) == true) {
                 check = true;
@@ -961,27 +871,22 @@ function checkType(id) {
 				break;
 			}
             ISO = false;
-
             regex = /^[0-9|\+|Z|\/|-|T|:]*$/;
             if (regex.test(text) == true) {
                 check = true;
-
             }
             regex = /^[0-9|\/|\.]*$/;
             if (regex.test(text) == false) {
                 //console.log(text);
                 regex = /\+[0-9]{4}-[0-9]{2}-[0-9]{2}T00:00:00Z\//g
                 if (regex.test(text) == false) {
-
                     break;
                 } else {
                     ISO = true;
                 }
             }
-
             if (ISO) {
                 textArr = [text.slice(1, 5)];
-
                 if (text.slice(6, 8) != "00") {
                     textArr.unshift(text.slice(6, 8));
                 };
@@ -992,7 +897,6 @@ function checkType(id) {
                 textArr = text.split(/\.|\//);
             }
             precision = textArr.length + 8;
-
             switch (precision) {
                 case 9:
                     time = '+' + textArr[0] + '-00-00T00:00:00Z/09';
@@ -1021,16 +925,13 @@ function checkType(id) {
             check = true;
             break;
         case 'String':
-
             regex = /^Q[0-9]*$/g
             if (regex.test(text) != true) {
                 check = true;
             }
             break;
         case 'Url':
-
 				check = true;
-			
             break;
         case 'Globecoordinate':
 				check = true
@@ -1041,25 +942,17 @@ function checkType(id) {
         case 'Monolingualtext':
 				check = true
             break;
-
-
-
     }
     if (text == "") {
         check = true;
     };
-
     if (check === true) {
-
         jQuery('#' + id).attr('class', 'td ok');
-
     } else {
         jQuery('#' + id).attr('class', 'td nogo');
 
     }
-
     return check;
-
 }
 
 
@@ -1069,11 +962,9 @@ function getDate(dateStr) {
         date[0] = dateStr.slice(9, 11);
         date[1] = dateStr.slice(6, 8);
         date[2] = dateStr.slice(1, 5);
-
         dateStr = date.join('.');
         dateStr = dateStr.replace(/00\./g, "");
     }
-
     return dateStr;
 }
 
