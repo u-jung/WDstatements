@@ -54,12 +54,12 @@ Yes, it needs. But it should be much easier to comply with these requirements th
 ## Here comes an example input file
 (Let's presume that LANGUAGE=de is set. Otherwise you need to declare the column headers with the property label in your language)
 
-item|P31|P31.S248|P31.S214|Geburtsdatum|P569.S254|Ehepartner|P26.P580|P69|P69.S248|P69.S254
-------------------------------------------------------------
-Douglas Adams|Q5|Virtual International Authority File|113230702|11.3.1952|http://data.bnf.fr/ark:/12148/cb1188092r|Jane Belson|25.11.1991|||
-Q42||||||||St. John's College|Encyclopedia Britannica Online|
-Douglas Adams||||||||University of Cambridge||http://www.screenonline.org.uk/people/id/1233876/index.html
-Arthur Dent|fiktiver Mensch|||||||||
+|item         |P31            |P31.S248                            |P31.S214 |Geburtsdatum|P569.S254                               |Ehepartner |P26.P580  |P69                    |P69.S248                      |P69.S254                                                   |
+|-------------|---------------|------------------------------------|---------|------------|----------------------------------------|-----------|----------|-----------------------|------------------------------|-----------------------------------------------------------|
+|Douglas Adams|Q5             |Virtual International Authority File|113230702|11.3.1952   |http://data.bnf.fr/ark:/12148/cb1188092r|Jane Belson|25.11.1991|                       |        						 |                                                           |
+|Q42          |               |                                    |         |            |                                        |           |          |St. John's College     |Encyclopedia Britannica Online|                                                           | 
+|Douglas Adams|               |                                    |         |            |                                        |           |          |University of Cambridge|                              |http://www.screenonline.org.uk/people/id/1233876/index.html|
+|Arthur Dent  |fiktiver Mensch|                                    |         |            |                                        |           |          |                       |                              |                                                           |
 
 Your input file may have lots of lines.
 But it would be better for you to not insert more than 200 to 400 lines at one time. Otherwise you my soon be boored of all this items you need to confirm.  This could be the moment where error will come for sure.
