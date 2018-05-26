@@ -27,7 +27,16 @@ Yes, it needs. But it should be much easier to comply with these requirements th
 - If there are more than one statement for one property just create a new line for each additionaly statement in your csv table. Each new line should contain the item in the first column as well as the statement in the correspondent column.  
 - Date values can be written in multiple ways. For full dates use *dd.mm.yyyy* or *dd/mm/yyyy*. You can also use single digit values for month and day (d.y.yyyy) but the year value must have four digits and the Gregorian calendar is used. If you don't know the day you can use mm/yyyy or mm.yyyy. But you can not use the month by his name!
 - WDstatements will lockup for WikibaseItems using the label you will give as a string. For this it will be helpful if your search term are nether too broad nor too narrow. If it's too broad the lockup will retrieve too much results. If it's too narrow you may retrieve nothing and create an unwanted duplicate item.
-- Quantity statements and coordinates are not yet implemented. Sorry for that.
+- Location statements can be written with one of the following pattern: *lat,lon* or *lat;lon" or *geo:lat,lon* or *geo:lat,lon?z=zoom* or in the original pattern for QuickStatements *@lat/lon* . Make sure note the latitude before the longitude. Instead of comma you may also use semicolon or slash for separate them. Do not use quotes! But use a dot for the decimal separators. You can use both minus and plus signs together with the degrees. 
+- Quantity statements need to be notes as described in QickStatements: 
+  *"Quantity in the form of amount[lower,upper]Uxx, with amount, lower and upper being a rational number and Uxx being the item number of an unit.
+  unit is optional.
+  lower, upper are optional. lower and upper must be either both present or not present at all. When present, they are enclosed in square brackets and separated by ,
+  amount, lower and upper must use . as decimal separator, must not use any thousands separator and may be prefixed by + or -.
+  Don't leave any space in the quantity.
+  10, 10U11573, -10[-12.5,-7.5], 0[-5,5]U11573 are all valid quantities."*
+  For the instance this tool do not check if a quantity statement will be correct.
+- QuickStatements MERGE statement is not yet implemented. We are sorry for that.
 
 ## How to use?
 - Just download the code and store the unzipped folder somewhere where you may find it again later. Then open the file *statements.html* in your broser. It has been tested in current versions of Firefox and Chrome.

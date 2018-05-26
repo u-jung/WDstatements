@@ -1,3 +1,27 @@
+/*
+ * statements.js
+ * 
+ * Copyright 2018 FH Potsdam FB Informationswissenschaften PR Kolonialismus <kol@fhp-kol-1>
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ * 
+ * 
+ */
+
+
 var properties = [];
 var objects = {};
 var csvArr = [];
@@ -933,8 +957,35 @@ function checkType(id) {
         case 'Url':
 				check = true;
             break;
-        case 'Globecoordinate':
-				check = true
+        case 'GlobeCoordinate':
+			regex = /^[-|+]{0,1}[0-9]{1,3}\.[0-9]+[,|;|\/][-|+]{0,1}[0-9]{1,3}\.[0-9]+$/g;
+			if (regex.test(text) == true){
+				check = true;
+				textArr=text.split(",")
+				jQuery("#"+id).text("@"+textArr[0] +"/"+textArr[1])
+				break;
+				}
+			regex=/^[-|+]{0,1}[0-9]{1,3}\.[0-9]+[,|;|\/][-|+]{0,1}[0-9]{1,3}\.[0-9]+\?z=[0-9]{1,2}$/g;
+			if (regex.test(text) == true){
+				check = true;
+				textArr=text.split(/,|;|\?/g)
+				jQuery("#"+id).text("@"+textArr[0] +"/"+textArr[1])
+				break;
+				}				
+			regex=/^geo:[-|+]{0,1}[0-9]{1,3}\.[0-9]+[,|;|\/][-|+]{0,1}[0-9]{1,3}\.[0-9]+\?z=[0-9]{1,2}$/g;
+			if (regex.test(text) == true){
+				check = true;
+				textArr=text.split(/geo:|,|;|\?/g)
+				jQuery("#"+id).text("@"+textArr[1] +"/"+textArr[2])
+				break;
+				}
+			regex=/^@[0-9]{1,3}\.[0-9]+\/[0-9]{1,3}\.[0-9]+$/g
+			if (regex.test(text)==true){
+				jQuery('#'+id).text(text);
+				check=true;
+				break;
+			}
+			check=false;
             break;
         case 'ExternalId':
 				check = true
