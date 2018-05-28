@@ -11,7 +11,7 @@ Sorry, this is not the nicest piece of code. However it seems to work. Feel free
 ## Why should I use this?
 Even if *QuickStatements* is a very powerful however it requires a careful preparation of input data. *WDstatements* will create a string which you can later copy&paste into the *QuickStatements* interface.
 
-## Language Note	
+## Language note	
 The tool has been pre-configurated for the use of German labels and descriptions. Please change the line *var LANGUAGE="de";* inside the javascript file if you prefer another language.
 
 ## Does WDstatements need to comply with any requirements?
@@ -20,15 +20,16 @@ Yes, it needs. But it should be much easier to comply with these requirements th
 - The first column must have the title *item* (in lower case). The cells in this column contain the *subject* (semantically spoken). This could be a known Wikidata object (like *Q42*) or a String (like *Douglas Adams*).
 - All other column titles must be named using a valid property with German {or your language} label (like *ist ein(e)*) or the property code (like "P31" in Upper case).
 - Columns for label information should be named following the QuickStatements rules (e.g. "Lde" for label in German, "Dde" for description in German or "Ade" for alternate label in German)
-- There are special rules for column titles if we have source information stored in the correspondent column. For source information use "S" instead of "P" inside the property code (like "S248"). Furthermore we need to add the parent property to which the source refer. This will be done by adding the parent property code as suffix together with a dot (like "P31.S248"). In this case the parent property must be noted as code.
+- There are special rules for column titles if we have source information stored in the corresponding column. For source information use "S" instead of "P" inside the property code (like "S248"). Furthermore we need to add the parent property to which the source refer. This will be done by adding the parent property code as suffix together with a dot (like "P31.S248"). In this case the parent property must be noted as code.
 - The same procedure is needed for qualifier statements. In this case the child property code keeps his "P". Here is an example: "P159.P969" means property "address" (P969) as a qualifier to the property "headquarters location" (P159)
 - It would be useful if the columns containing the parent properties are lefter than their respective child properties. 
 - String values inside the table should not be quoted ("" or ''). But they may have some apostrophes inside (L'école)
-- If there are more than one statement for one property just create a new line for each additionaly statement in your csv table. Each new line should contain the item in the first column as well as the statement in the correspondent column.  
+- If there are more than one statement for one property just create a new line for each additionaly statement in your csv table. Each new line should contain the item in the first column as well as the statement in the corresponding column.  
 - Date values can be written in multiple ways. For full dates use *dd.mm.yyyy* or *dd/mm/yyyy*. You can also use single digit values for month and day (d.y.yyyy) but the year value must have four digits and the Gregorian calendar is used. If you don't know the day you can use mm/yyyy or mm.yyyy. But you can not use the month by his name!
 - WDstatements will lockup for WikibaseItems using the label you will give as a string. For this it will be helpful if your search term are nether too broad nor too narrow. If it's too broad the lockup will retrieve too much results. If it's too narrow you may retrieve nothing and create an unwanted duplicate item.
 - Location statements can be written with one of the following pattern: *lat,lon* or *lat;lon" or *geo:lat,lon* or *geo:lat,lon?z=zoom* or in the original pattern for QuickStatements *@lat/lon* . Make sure note the latitude before the longitude. Instead of comma you may also use semicolon or slash for separate them. Do not use quotes! But use a dot for the decimal separators. You can use both minus and plus signs together with the degrees. 
 - Quantity statements need to be notes as described in QickStatements: 
+
   *"Quantity in the form of amount[lower,upper]Uxx, with amount, lower and upper being a rational number and Uxx being the item number of an unit.
   unit is optional.
   lower, upper are optional. lower and upper must be either both present or not present at all. When present, they are enclosed in square brackets and separated by ,
@@ -61,7 +62,7 @@ Yes, it needs. But it should be much easier to comply with these requirements th
 **Please check the result string carefully before you may paste it into the QuickStatements interface, because nobody is perfect!**
 
 ## Here comes an example input file
-(Let's presume that LANGUAGE=de is set. Otherwise you need to declare the column headers with the property label in your language)
+(Let's presume that *var LANGUAGE=de* is set. Otherwise you need to declare the column headers with the property labels in your language or just the correspending property id.)
 
 |item         |P31            |P31.S248                            |P31.S214 |Geburtsdatum|P569.S254                               |Ehepartner |P26.P580  |P69                    |P69.S248                      |P69.S254                                                   |
 |-------------|---------------|------------------------------------|---------|------------|----------------------------------------|-----------|----------|-----------------------|------------------------------|-----------------------------------------------------------|
