@@ -1,5 +1,5 @@
 
-Sorry, this is not the nicest piece of code. However it seems to work. Feel free to improve.
+**Note** Sorry, this is not the nicest piece of code. However it seems to work. Feel free to improve.
 
 ---
 
@@ -9,7 +9,7 @@ Sorry, this is not the nicest piece of code. However it seems to work. Feel free
 *QuickStatements* can add statements (with optional qualifiers and sources) to Wikidata items via a batch mode.
 
 ## Why should I use this?
-Even if *QuickStatements* is a very powerful however it requires a careful preparation of input data. *WDstatements* will create a string which you can later copy&paste into the *QuickStatements* interface.
+Even if *QuickStatements* is a very powerful tool however it requires a careful preparation of input data. *WDstatements* will create a string which you can later copy&paste into the *QuickStatements* interface.
 
 ## Language note	
 The tool has been pre-configurated for the use of German labels and descriptions. Please change the line *var LANGUAGE="de";* inside the javascript file if you prefer another language.
@@ -56,12 +56,15 @@ Yes, it needs. But it should be much easier to comply with these requirements th
 - You now need to change all cell labels into green, blue or grey color. After this click on "Start output for QuickStatements"!
 	- If you have a blue label in another than the firt column you will be asked to first create these items using QuickStatements. Do so and requery the blue labels once again. You will see the new item amoing the proposed.
 	- If you don't have blue labels or if the blue labels are only in the first column you will now get a result string which you can copy&paste into QuickStatements. 
+- If a red item label appears multiple times, it would be better to check the cell where it appears first. The other instances will not show the selection of possibe items. 
+- Currently the tool make no difference between two different object with the same label. So once you confirm one cell, some unwanted cells may also change. To prevent such a beheavior we propose to modify the labels of both items slightly. 
+- Once you have exported a first result string, please reload the emty page! Otherwise some functions will not work.  (This is the reason of the trouble button)
 
 
 **Please check the result string carefully before you may paste it into the QuickStatements interface, because nobody is perfect!**
 
 ## Here comes an example input file
-You can download the example (example.csv).
+You can download also the file from (WDstatements/example.csv) 
 (Let's presume that *var LANGUAGE=de* is set. Otherwise you need to declare the column headers with the property labels in your language or just the correspending property id.)
 
 |item         |P31            |P31.S248                            |P31.S214 |Geburtsdatum|P569.S854                               |Ehepartner |P26.P580  |P69                    |P69.S248                      |P69.S854                                                   |
@@ -81,6 +84,7 @@ Q42	P69	Q35794	S854	"http://www.screenonline.org.uk/people/id/1233876/index.html
 Q613901	P31	Q15632617
 ```
 
+**Note**
 Your input file may have lots of lines.
 But it would be better for you to not insert more than 200 to 400 lines at one time. Otherwise you my soon be boored of all this items you need to confirm.  This could be the moment where error will come for sure.
  

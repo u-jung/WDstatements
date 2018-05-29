@@ -1,180 +1,185 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 
 <head>
-	<title>WDstatements</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-	<meta name="generator" content="Geany 1.27" />
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.71/jquery.csv-0.71.min.js"></script>
-	<script src="statements.js" type="text/javascript"> </script>
-	<style>
-	.line {
-		border: 1px solid black;
-		margin:5px;
-		padding:10px;
-		width:1488px;
-	}
-	input[type=checkbox]{
-		margin-left:1600px;
-		transform: scale(1.5);
-	}
-	div.header {
-			font-weight:bolder;
-		}
-		
-	div.table { 
-	margin-top:30px;
-      display: table; 
-      border-collapse:collapse; 
-    }
-    div.tr { 
-      display:table-row; 
-    }
-    div.td { 
-      display:table-cell; 
-      border:thin solid white; 
-      padding:5px; 
-      width:200px;
-      cursor:pointer;
-    }
-    
-    .ok{
-		color:green;
-	}
-	
-	.nogo{
-		color:red;
-	}
-	
-	.create {
-		
-		color:blue;
-	}
-	
-	.hide{
-		font-weight:bold;
-		color:#ccc;
-	}
-	
-	#output2{
-		/*display:none;*/
-		background-color:light-grey;
-		/*border:solid 1px grey;*/
-		height:5px;
-	}
-	
-	#output2::before{
-		content:"";
-	}
-	#counter::before{
-		content:"Cells still to check: ";
-		font-weight:normal;
-		color:green;
-	}
-	
-	#counter{
-		font-weight:bold;
-		margin-top:10px;
-		border: solid 1px grey;
-		padding: 5px;
-		width: 200px;
-	}
-	#popup{
-		display:none;
-		min-height:300px;
-		height:500px;
-		min-width:300px;
-		position:absolute;
-		background-color:white;
-		border: thin solid grey;
-		border-radius:0px 10px 10px 10px;
-		padding:5px;
-	}
-	
-	#choice{
-		overflow:auto;
-		height:100%;
-		width:100%;
-	}
-	
-	#choice li {
-		list-style-type: none; 
-		color:black;
-	}
-	
-	strong{
-		cursor:pointer;
-	}
-	
-	textarea {
-  width: 600px;
-  height: 100%;
-}
+    <title>WDstatements</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="generator" content="Geany 1.27" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.71/jquery.csv-0.71.min.js"></script>
+    <script src="statements.js" type="text/javascript">
 
 
+    </script>
+    <style>
+        .line {
+            border: 1px solid black;
+            margin: 5px;
+            padding: 10px;
+            width: 1488px;
+        }
 
-	
-	
-	
-.upload-btn-wrapper {
-  position: relative;
-  overflow: hidden;
-  display: inline-block;
-}
+        input[type=checkbox] {
+            margin-left: 1600px;
+            transform: scale(1.5);
+        }
 
-.btn {
-  border: 2px solid gray;
-  color: gray;
-  background-color: white;
-  padding: 8px 20px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: bold;
-  margin-top:5px;
-}
+        div.header {
+            font-weight: bolder;
+        }
+
+        div.table {
+            margin-top: 30px;
+            display: table;
+            border-collapse: collapse;
+        }
+
+        div.tr {
+            display: table-row;
+        }
+
+        div.td {
+            display: table-cell;
+            border: thin solid white;
+            padding: 5px;
+            width: 200px;
+            cursor: pointer;
+        }
+
+        .ok {
+            color: green;
+        }
+
+        .nogo {
+            color: red;
+        }
+
+        .create {
+
+            color: blue;
+        }
+
+        .hide {
+            font-weight: bold;
+            color: #ccc;
+        }
+
+        #output2 {
+            /*display:none;*/
+            background-color: light-grey;
+            /*border:solid 1px grey;*/
+            height: 5px;
+        }
+
+        #output2::before {
+            content: "";
+        }
+
+        #counter::before {
+            content: "Cells still to check: ";
+            font-weight: normal;
+            color: green;
+        }
+
+        #counter {
+            font-weight: bold;
+            margin-top: 10px;
+            border: solid 1px grey;
+            padding: 5px;
+            width: 200px;
+        }
+
+        #popup {
+            display: none;
+            min-height: 300px;
+            height: 500px;
+            min-width: 300px;
+            position: absolute;
+            background-color: white;
+            border: thin solid grey;
+            border-radius: 0px 10px 10px 10px;
+            padding: 5px;
+        }
+
+        #choice {
+            overflow: auto;
+            height: 100%;
+            width: 100%;
+        }
+
+        #choice li {
+            list-style-type: none;
+            color: black;
+        }
+
+        strong {
+            cursor: pointer;
+        }
+
+        textarea {
+            width: 600px;
+            height: 100%;
+        }
+
+        .upload-btn-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .btn {
+            border: 2px solid gray;
+            color: gray;
+            background-color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
 
 
-.upload-btn-wrapper input[type=file] {
-  font-size: 100px;
-  position: absolute;
-  left: 0;
-  top: 0;
-  opacity: 0;
-}
-	</style>
+        .upload-btn-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+        }
+
+    </style>
 </head>
 
 <body>
-	
-	<div class="buttons">
-	<input type="submit" value="Insert from clipboard" id="clipboard" class="btn"> 
-	<input type="submit" value="Start output for QuickStatements" id="start-output" class="btn"> 
-	<!--<input type="submit" value="Save State" id="save" class="btn"> -->
-	<input type="submit" value="Go to QuickStatements" id="quickstatements" class="btn"> 
-	</div>
-	
-	<div class="upload-btn-wrapper">
-	  <button class="btn">Upload a file</button>
-	  <input type="file" name="myfile" id="file-input" />
-	</div>
-		
-	<div id="counter" class="btn"></div>
-	<br>
-	<div id="output2" ></div>
-	<br>
+
+    <div class="buttons">
+        <input type="submit" value="Insert from clipboard" id="clipboard" class="btn">
+        <input type="submit" value="Start output for QuickStatements" id="start-output" class="btn">
+        <!--<input type="submit" value="Save State" id="save" class="btn"> -->
+        <input type="submit" value="Go to QuickStatements" id="quickstatements" class="btn">
+        <input type="submit" value="Reload the empty page in case of trouble!" id="trouble" class="btn" style="background-color:lightgrey;">
+    </div>
+
+    <div class="upload-btn-wrapper">
+        <button class="btn">Upload a file</button>
+        <input type="file" name="myfile" id="file-input" />
+    </div>
+
+    <div id="counter" class="btn"></div>
+    <br>
+    <div id="output2"></div>
+    <br>
     <div id='output' class="table btn">
-    
+
     </div>
     <div id='popup'></div>
-    </body>
-	
-	
+</body>
+
+
 </body>
 
 </html>
