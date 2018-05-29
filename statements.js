@@ -22,12 +22,12 @@
  */
 
 
-var properties = [];
+var PROPERTIES = [];
 var objects = {};
 var csvArr = [];
 
 var INIT = true;
-var queries=[];
+var QUERIES=[];
 var requery=false;
 var LANGUAGE="de";
 if (LANGUAGE!="en"){
@@ -37,6 +37,8 @@ else{
 	var LABELS = [ 'Den', 'Aen', 'Len'];	
 }
 var CELLS=[];
+var numberOfStatements=0;
+var fillDivEnded=false;
 csvdata=true;
 console.log("ok");
 
@@ -49,39 +51,57 @@ jQuery(document).ready(function() {
         readCSV()
     });
 
+	 jQuery("body").on('click', '#quickstatements', function() {
+		var win = window.open("https://tools.wmflabs.org/wikidata-todo/quick_statements.php", '_blank');
+		win.focus();
+	 });
+
     jQuery("body").on('click', '#clipboard', function() {
-        if (jQuery('#popup').css("display") == "none") {
+        //if (jQuery('#popup').css("display") == "none") {
+        if (jQuery('#output2 textarea').length == 0) {
             jQuery('#output').html("");
 
             inputCSV();
             jQuery('textarea').focus();
             jQuery('#clipboard').val("Process Data");
         } else {
-            jQuery('#popup').css("display", 'none')
+            //jQuery('#popup').css("display", 'none');
+            jQuery('#output2 textarea').css("height","0px");
             jQuery('#clipboard').val("Insert from clipboard");
-            if(jQuery('#popup textarea').val().slice(0,1)=="["){
-				text=processJSON(JSON.parse(jQuery('#popup textarea').val()));
+            //if(jQuery('#popup textarea').val().slice(0,1)=="["){
+			if(jQuery('#output2 textarea').val().slice(0,1)=="["){
+				//text=processJSON(JSON.parse(jQuery('#popup textarea').val()));
+				text=processJSON(JSON.parse(jQuery('#output2 textarea').val()));
 				fillDIV();
+				jQuery('#output2 textarea').remove();
 				return;
 			}
-			if (jQuery('#popup textarea').val().slice(0,1)=="["){
-				text=processJSON(JSON.parse(jQuery('#popup textarea').val()));
+			//if (jQuery('#popup textarea').val().slice(0,1)=="["){
+			if (jQuery('#output2 textarea').val().slice(0,1)=="["){
+				//text=processJSON(JSON.parse(jQuery('#popup textarea').val()));
+				text=processJSON(JSON.parse(jQuery('#output2 textarea').val()));
 				console.log(text);
 				text = text.replace(/,/g, ';');
 				text = text.replace(/\t/g, ',');
 				processData(text);
+				jQuery('#output2 textarea').remove();
 				return;
 			}
+
+			
 			
             if (csvdata){
-				text = jQuery('#popup textarea').val()
+				//text = jQuery('#popup textarea').val();
+				text = jQuery('#output2 textarea').val();
 				text = text.replace(/,/g, ';');
 				text = text.replace(/\t/g, ',');
 				processData(text);
+				jQuery('#output2 textarea').remove();
 			}
 			else{
 				csvdata=true;
-				jQuery('#output').html(jQuery('#popup textarea').val()); 
+				//jQuery('#output').html(jQuery('#popup textarea').val()); 
+				jQuery('#output').html(jQuery('#output2 textarea').val()); 
 			}
         }
 
@@ -132,7 +152,7 @@ function startOutput() {
         }
     }
     if (checkError.length > 0) {
-        alert("You have " + checkError.length + " non conform cells. Check the log.\nProcess cancelled");
+        alert("You have " + checkError.length + " non conform cells. Check the log.\nProcess cancelled. \n\nIgnore that massage and got on if you just started with the import of data");
         console.log("Non conform cells");
         for (id = 0; id < checkError.length; id++) {
             console.log(checkError[id], jQuery('#' + checkError[id]).text(), ' in row: ', jQuery('#' + checkError[id].split('-')[0] + '-0').text(), "  property: ", jQuery('#0-' + checkError[id].split('-')[1]).text());
@@ -153,7 +173,9 @@ function startOutput() {
             createArr.push('LAST\tDde\t"BESCHREIBUNG"');
             createArr.push('LAST\tP31\tQQQQQQQQQQQQ');
         }
+        jQuery("#output2").before().css("content",'This is the result string. Copy and paste into QuickStatements');
         openTextarea(createStr);
+        
         return
     }
 
@@ -172,13 +194,13 @@ function startOutput() {
             createArr.push([jQuery('#' + row + '-0').text(),"LAST\tLde\t" + quote(jQuery('#' + row + '-0').text(),-1) ]);
 
         }
-        for (pi = 1; pi < properties.length; pi++) {
-            console.log(properties.length, properties[pi]['parent'], regex.test(properties[pi]['originalLabel']), pi);
-            if ((properties[pi]['parent'] == '') && (!(regex.test(properties[pi]['originalLabel'])))) {
-                objStr= getObject(subject, row, properties[pi]['p']);
+        for (pi = 1; pi < PROPERTIES.length; pi++) {
+            console.log(PROPERTIES.length, PROPERTIES[pi]['parent'], regex.test(PROPERTIES[pi]['originalLabel']), pi);
+            if ((PROPERTIES[pi]['parent'] == '') && (!(regex.test(PROPERTIES[pi]['originalLabel'])))) {
+                objStr= getObject(subject, row, PROPERTIES[pi]['p']);
                 createStr+=objStr
                 if(objStr!=""){
-					createArr.push([jQuery('#' + row + '-0').text(),getObject(subject, row, properties[pi]['p'])]);
+					createArr.push([jQuery('#' + row + '-0').text(),getObject(subject, row, PROPERTIES[pi]['p'])]);
 				}
             }
 
@@ -316,8 +338,8 @@ function getLde(createArr,i){
 
 function getObject(subject, row, p) {
     console.log('getObject', subject, row, p);
-    for (i = 1; i < properties.length; i++) {
-        if (properties[i]['p'] == p) {
+    for (i = 1; i < PROPERTIES.length; i++) {
+        if (PROPERTIES[i]['p'] == p) {
             if (jQuery('#' + row + '-' + i).attr('class') == 'td ok') {
                 if (jQuery('#' + row + '-' + i).text() != "") {
                     return subject + '\t' + p + '\t' + quote(jQuery('#' + row + '-' + i).text(), i) + addChildren(row, i) + addSources(row,i) + '';
@@ -333,20 +355,37 @@ function getObject(subject, row, p) {
 function addChildren(row, i) {
     console.log('addChildren', row, i);
     returnStr = "";
-    if ('children' in properties[i]) {
-        parent = properties[i]['p'];
-        for (child = 0; child < properties[i]['children'].length; child++) {
+    source_statement_arr=[];
+    if ('children' in PROPERTIES[i]) {
+        parent = PROPERTIES[i]['p'];
+        for (child = 0; child < PROPERTIES[i]['children'].length; child++) {
             console.log('has children');
-            for (j = 1; j < properties.length; j++) {
-                if (properties[j]['p'] == properties[i]['children'][child]) {
+            for (j = 1; j < PROPERTIES.length; j++) {
+                //if (PROPERTIES[j]['p'] == PROPERTIES[i]['children'][child]) {
+                //if (PROPERTIES[j]['p'].slice(1)== PROPERTIES[i]['children'][child].slice(1) && PROPERTIES[i]['children'][child].slice(0,1)=="S") {
+                if (PROPERTIES[j]['p'].slice(1)== PROPERTIES[i]['children'][child].slice(1)) {
                     console.log('found the child');
-                    if (properties[j]['parent'] != "") {
+                    if (PROPERTIES[j]['parent'] != "") {
 
-                        if (properties[j]['parent'] == parent) {
+                        if (PROPERTIES[j]['parent'] == parent) {
                             console.log('child has parent');
                             if ((jQuery('#' + row + '-' + i).text() != "") && (jQuery('#' + row + '-' + i).attr('class') == 'td ok')) {
 								if (jQuery('#' + row + '-' + j).text()!=""){
-									returnStr += '\t' + properties[j]['p'] + '\t' + quote(jQuery('#' + row + '-' + j).text(), j);
+									//returnStr += '\t' + PROPERTIES[j]['p'] + '\t' + quote(jQuery('#' + row + '-' + j).text(), j);
+									/*source_statement_exist=false;
+									source_statement='\t' + PROPERTIES[i]['children'][child] + '\t' + quote(jQuery('#' + row + '-' + j).text(), j)
+									for (k=0; k<source_statement_arr.length;k++){
+										if (source_statement_arr[k]==source_statement){
+											source_statement_exist=false;
+										}
+									}
+									if(source_statement_exist){
+										source_statement_arr.push(source_statement);
+									}*/
+									console.log(returnStr.split('\t'),PROPERTIES[i]['children'][child]);
+									if(returnStr.split('\t').indexOf(PROPERTIES[i]['children'][child])==-1){
+										returnStr += '\t' + PROPERTIES[i]['children'][child] + '\t' + quote(jQuery('#' + row + '-' + j).text(), j);
+									}
 								}
                             }
                         }
@@ -355,6 +394,9 @@ function addChildren(row, i) {
             }
         }
     }
+	/*for (k=0; k<source_statement_arr.length;k++){
+		returnStr += source_statement_arr[k];
+	}*/
     return returnStr;
 }
 
@@ -363,8 +405,8 @@ function quote(text, i) {
 	if(i==-1){
 		return '"'+text+'"';
 	}
-    if (['Monolingualtext','String','Url', 'ExternalId'].indexOf(properties[i]['type'])>-1) {
-		if (['Monolingualtext'].indexOf(properties[i]['type'])>-1) {
+    if (['Monolingualtext','String','Url', 'ExternalId'].indexOf(PROPERTIES[i]['type'])>-1) {
+		if (['Monolingualtext'].indexOf(PROPERTIES[i]['type'])>-1) {
 			return LANGUAGE+':"' + text + '"';
 		}
 		else{
@@ -376,21 +418,22 @@ function quote(text, i) {
 }
 
 function addSources(row,i) {
+	return "";
     //console.log('addSources', row);
     returnStr = "";
     regex = /^.*\.S[0-9]*$/g
-    for (j = 1; j < properties.length; j++) {
-		//console.log(properties[j]['originalLabel'], regex);
-        if (regex.test(properties[j]['originalLabel']) == true) {
+    for (j = 1; j < PROPERTIES.length; j++) {
+		//console.log(PROPERTIES[j]['originalLabel'], regex);
+        if (regex.test(PROPERTIES[j]['originalLabel']) == true) {
             if ((jQuery('#' + row + '-' + j).text() != "") && (jQuery('#' + row + '-' + j).attr('class') == 'td ok')) {
-				if('parent' in properties[j]){
-					if(properties[j]['parent']==properties[i]['p']){
-						returnStr += '\t' + properties[j]['originalLabel'].split(".")[1] + '\t' + quote(jQuery('#' + row + '-' + j).text(), j);
+				if('parent' in PROPERTIES[j]){
+					if(PROPERTIES[j]['parent']==PROPERTIES[i]['p']){
+						returnStr += '\t' + PROPERTIES[j]['originalLabel'].split(".")[1] + '\t' + quote(jQuery('#' + row + '-' + j).text(), j);
 					}
 					
 				}
 				else{
-					returnStr += '\t' + properties[j]['originalLabel'].split(".")[1] + '\t' + quote(jQuery('#' + row + '-' + j).text(), j);
+					returnStr += '\t' + PROPERTIES[j]['originalLabel'].split(".")[1] + '\t' + quote(jQuery('#' + row + '-' + j).text(), j);
 				}
             }
         }
@@ -406,19 +449,20 @@ function fillDIV() {
         for (i = 0; i < csvArr[0].length; i++) {
             if (j == 0) {
                 row += '<div class="td header" id="' + j + '-' + i + '">' + csvArr[j][i] + '</div>';
-                properties.push({
+                PROPERTIES.push({
                     "originalLabel": csvArr[j][i]
                 });
                 if (LABELS.indexOf(csvArr[j][i]) > -1) {
-                    properties[i]["p"] = csvArr[j][i];
-                    properties[i]["type"] = "String";
+                    PROPERTIES[i]["p"] = csvArr[j][i];
+                    PROPERTIES[i]["type"] = "String";
                 }
+                
 
             } else {
 				console.log(csvArr[j][i]);
 				if(csvArr[j][i] == undefined){csvArr[j][i]=="", console.log("changed");};
                 row += '<div class="td nogo" id="' + j + '-' + i + '" alt="' + csvArr[j][i] + '" value="">' + csvArr[j][i] + '</div>';
-                if (properties[i]['type'] == 'Time') {
+                if (PROPERTIES[i]['type'] == 'Time') {
                     //checkType(j+'-'+i);
                 }
             }
@@ -431,19 +475,27 @@ function fillDIV() {
         confirm(event, jQuery(this).attr("id"))
     });
     checkCells();
+    fillDivEnded=true;
 }
 
 
 
 
 function checkCells() {
+
 	k=0;
-    counter = csvArr.length * csvArr[0].length;
+	numberOfStatements=0
+    counter = (csvArr.length * csvArr[0].length) -1;
     for (j = 0; j < csvArr.length; j++) {
         for (col = 0; col < csvArr[0].length; col++) {
 			if(jQuery('#' + j + '-' + col).text()=='undefined'){
 				jQuery('#' + j + '-' + col).text("");
 				jQuery('#' + j + '-' + col).attr("alt","");
+			}
+			else{
+				if(j!=0 && col!=0 && jQuery('#' + j + '-' + col).attr("class")!= "td hide"){
+					numberOfStatements+=1;
+				}
 			}
 			console.log(k++);
             regex = /^Q[0-9]+$/g
@@ -453,7 +505,7 @@ function checkCells() {
             if (LABELS.indexOf(csvArr[0][col]) > -1) {
                 jQuery('#' + j + '-' + col).attr("class", "td ok");
             }
-            if (properties[col]['type'] == 'Time') {
+            if (PROPERTIES[col]['type'] == 'Time') {
                 //continue;
             } else {
                 if (j > 0 && jQuery('#' + j + '-' + col).attr('class').indexOf('ok') > -1) {
@@ -462,13 +514,15 @@ function checkCells() {
                 lookup(j + '-' + col);
             }
             jQuery('#counter').text(counter--);
+            
             confirmExec(j + '-' + col);
         }
     }
     INIT = false;
-    jQuery('#popup').css("display", 'none');
+    //jQuery('#popup').css("display", 'none');
+    jQuery('#output2 textarea').css("height", '0px');
     startOutput();
-    console.log(properties);
+    console.log(PROPERTIES);
 }
 
 
@@ -481,31 +535,33 @@ function confirm(event, id) {
 }
 
 function confirmExec(id,force=false) {
-    jQuery('#popup').css("display", 'block');
-    jQuery('#popup').html("");
-    jQuery('#popup').prepend(jQuery("<div/>").attr("id", "choice").attr("size", "13"));
-    jQuery('#choice').append(jQuery('<li/>').html('<strong title="HIDE" style="color:brown;">HIDE </strong>'));
-    jQuery('#choice').append(jQuery('<li/>').html('<strong title="MODIFYTHIS" style="color:brown;">MODIFY THIS</strong>'));
-    jQuery('#choice').append(jQuery('<li/>').html('<strong title="MODIFYALL" style="color:brown;">MODIFY ALL</strong>'));
-    jQuery('#choice').append(jQuery('<li/>').html('<strong title="REQUERY" style="color:brown;">REQUERY </strong>'));
-    jQuery('#choice').append(jQuery('<li/>').html('<strong title="RESTORE" style="color:brown;">RESTORE </strong>'));
-    jQuery('#choice').append(jQuery('<li/>').html('<strong title="CREATE" style="color:brown;">CREATE </strong>'));
+	if (fillDivEnded){
+		jQuery('#popup').css("display", 'block');
+		jQuery('#popup').html("");
+		jQuery('#popup').prepend(jQuery("<div/>").attr("id", "choice").attr("size", "13"));
+		jQuery('#choice').append(jQuery('<li/>').html('<strong title="HIDE" style="color:brown;">HIDE </strong>'));
+		jQuery('#choice').append(jQuery('<li/>').html('<strong title="MODIFYTHIS" style="color:brown;">MODIFY THIS</strong>'));
+		jQuery('#choice').append(jQuery('<li/>').html('<strong title="MODIFYALL" style="color:brown;">MODIFY ALL</strong>'));
+		jQuery('#choice').append(jQuery('<li/>').html('<strong title="REQUERY" style="color:brown;">REQUERY </strong>'));
+		jQuery('#choice').append(jQuery('<li/>').html('<strong title="RESTORE" style="color:brown;">RESTORE </strong>'));
+		jQuery('#choice').append(jQuery('<li/>').html('<strong title="CREATE" style="color:brown;">CREATE </strong>'));
 
-    //console.log(properties[id.split('-')[1]]['type'],jQuery('#' + id).attr('value'));
-    if (properties[id.split('-')[1]]['type'] == "WikibaseItem") {
-        if ((jQuery('#' + id).attr('value') == "") || force){
-            lookup(id, jQuery('#' + id).text());
-        } else {
-			//console.log(jQuery('#' + id).attr('value'));
-            jQuery('#popup').html(jQuery('#' + id).attr('value'));
+		//console.log(PROPERTIES[id.split('-')[1]]['type'],jQuery('#' + id).attr('value'));
+		if (PROPERTIES[id.split('-')[1]]['type'] == "WikibaseItem") {
+			if ((jQuery('#' + id).attr('value') == "") || force){
+				lookup(id, jQuery('#' + id).text());
+			} else {
+				//console.log(jQuery('#' + id).attr('value'));
+				jQuery('#popup').html(jQuery('#' + id).attr('value'));
 
-        }
-        jQuery('#' + id).attr('value', jQuery('#popup').html());
-    }
-    jQuery('#choice strong').off;
-    jQuery('#choice').on("click", 'strong', function() {
-        changeDiv(id, jQuery(this).attr('title'), jQuery(this).parent().text())
-    });
+			}
+			jQuery('#' + id).attr('value', jQuery('#popup').html());
+		}
+		jQuery('#choice strong').off;
+		jQuery('#choice').on("click", 'strong', function() {
+			changeDiv(id, jQuery(this).attr('title'), jQuery(this).parent().text())
+		});
+	}
 }
 
 
@@ -518,6 +574,9 @@ function processData(icd10Codes) {
     }
     else{
 		console.log ("Make sure that the first column is called 'item'");
+	}
+	if (jQuery('#output2 textarea').length!=0){
+		jQuery('#output2 textarea').text="We are now processing the data. Please wait...";
 	}
     fillDIV();
 }
@@ -589,9 +648,10 @@ function readCSV() {
 
 function inputCSV() {
     openTextarea();
+    
 }
 
-function openTextarea(content = "") {
+function OLDopenTextarea(content = "") {
     jQuery('#popup').off;
     jQuery('#popup').html("");
     jQuery('#popup').css("top", '100px');
@@ -599,6 +659,22 @@ function openTextarea(content = "") {
     jQuery('#popup').append("<textarea></textarea>");
     jQuery('textarea').text(content);
     jQuery('#popup').css("display", 'block');
+
+};
+
+function openTextarea(content = "") {
+    //jQuery('#output2').off;
+    jQuery('#output2').html("");
+    //jQuery('#output2').css("top", '100px');
+    //jQuery('#output2').css("left", '100px');
+    //jQuery('#output2').css("height","300px");
+    jQuery('#output2').append("<textarea></textarea>");
+    jQuery('textarea').text(content);
+    //jQuery('#output2 textarea').css("background-color","lightgreen");
+    jQuery('#output2 textarea').attr("class","btn");
+    jQuery('#output2 textarea').css("height","300px");
+    jQuery('#output2 textarea').css("width","100%");
+    jQuery('#output2 ').css("display", 'inline');
 
 };
 
@@ -617,31 +693,31 @@ function lookup(id, searchTerm = "", popupContent = "") {
             pArr = csvArr[0][column].split(".");
             console.log(pArr);
             if (pArr.length > 1) {
-                properties[column]['parent'] = pArr[0];
-                for (k = 0; k < properties.length; k++) {
-                    console.log(properties[k]['originalLabel'], pArr[0] );
-                    if (properties[k]['originalLabel'] == pArr[0] || properties[k]['p']==pArr[0]) {
-                        if (!('children' in properties[k])) {
-                            properties[k]['children'] = [pArr[1]];
+                PROPERTIES[column]['parent'] = pArr[0];
+                for (k = 0; k < PROPERTIES.length; k++) {
+                    console.log(PROPERTIES[k]['originalLabel'], pArr[0] );
+                    if (PROPERTIES[k]['originalLabel'] == pArr[0] || PROPERTIES[k]['p']==pArr[0]) {
+                        if (!('children' in PROPERTIES[k])) {
+                            PROPERTIES[k]['children'] = [pArr[1]];
                         } else {
-                            properties[k]['children'].push(pArr[1]);
+                            PROPERTIES[k]['children'].push(pArr[1]);
                         }
                         break;
                     }
                 }
             } else {
-                properties[column]['parent'] = "";
+                PROPERTIES[column]['parent'] = "";
             }
             p = pArr[pArr.length - 1]
             regex = /^[P|S][0-9]*$/g
             if (regex.test(p) == true) {
                 if (p.slice(0, 1) == "S") {
-                    properties[column]['source'] = true;
+                    PROPERTIES[column]['source'] = true;
                 } else {
-                    properties[column]['source'] = false;
+                    PROPERTIES[column]['source'] = false;
                 }
                 p = p.replace("S", "P");
-                properties[column]['pClean'] = p;
+                PROPERTIES[column]['pClean'] = p;
                 query = 'SELECT DISTINCT ?p ?pLabel ?pDescription ?pType \
 						WHERE\
 						{\
@@ -652,7 +728,7 @@ function lookup(id, searchTerm = "", popupContent = "") {
 						?p schema:description ?pDescription FILTER (LANG (?pDescription) = "'+LANGUAGE+'").\
 						}'
             } else {
-                properties[column]['source'] = false;
+                PROPERTIES[column]['source'] = false;
                 query = "SELECT DISTINCT ?p ?pLabel ?pDescription ?pType \
 						WHERE\
 						{\
@@ -684,26 +760,28 @@ function lookup(id, searchTerm = "", popupContent = "") {
                 return;
             }
         }
+        //console.log(query);
         url = base_url + "?format=json&query=" + encodeURI(query);
     }
-    console.log(url);
+    //console.log(url);
     newQuery=true;
     if (requery){
 	}
 	else{
 		requery=false;
-		for (i=0;i<queries.length;i++){
-			console.log(queries[i] == url);
-			if (queries[i] == url){
+		for (i=0;i<QUERIES.length;i++){
+			console.log(QUERIES[i] == url);
+			if (QUERIES[i] == url){
 				newQuery=false;
 			}
 		}
-		if (!newQuery){
+		//console.log ("row ", row);
+		if (!newQuery && row!=0){
 			
 			return;
 		}
 	}
-    queries.push(url);
+    QUERIES.push(url);
     jQuery.ajax({
         url: url,
         success: function(data) {
@@ -715,6 +793,7 @@ function lookup(id, searchTerm = "", popupContent = "") {
             }
             WdResponse(data, id, searchTerm, "");;
         },
+        error: function(data){console.log("error reported for url " + url)},	
         async: false
     });
     return (query);
@@ -722,6 +801,7 @@ function lookup(id, searchTerm = "", popupContent = "") {
 
 
 function WdResponse(data, id, searchTerm) {
+	console.log(data, id, searchTerm);
     column = id.split("-")[1];
     row = id.split("-")[0];
     console.log(data, searchTerm, row, column);
@@ -744,22 +824,24 @@ function WdResponse(data, id, searchTerm) {
         });
         return;
     }
+    
     if (row == 0) {
+		// Filling the PROPERTIES array with values
         if (column == 0) {
-            properties[column]['type'] = "WikibaseItem";
+            PROPERTIES[column]['type'] = "WikibaseItem";
         }
-        properties[column]['pLabel'] = data[0]['pLabel']['value'];
-        properties[column]['p'] = data[0]['p']['value'].replace("http://www.wikidata.org/entity/", "");
+        PROPERTIES[column]['pLabel'] = data[0]['pLabel']['value'];
+        PROPERTIES[column]['p'] = data[0]['p']['value'].replace("http://www.wikidata.org/entity/", "");
         type = data[0]['pType']['value'];
 
-        properties[column]['type'] = type.replace("http://wikiba.se/ontology#", "");
+        PROPERTIES[column]['type'] = type.replace("http://wikiba.se/ontology#", "");
         if (regex.test(csvArr[0][column]) == true) {
-            jQuery('#' + id).attr('title', data[0]['pLabel']['value'] + ' (' + data[0]['pDescription']['value'] + ') ' + properties[column]['originalLabel']);
+            jQuery('#' + id).attr('title', data[0]['pLabel']['value'] + ' (' + data[0]['pDescription']['value'] + ') ' + PROPERTIES[column]['originalLabel']);
 
         } else {}
-        jQuery('#' + id).attr('title', data[0]['pLabel']['value'] + ' (' + data[0]['pDescription']['value'] + ') ' + properties[column]['originalLabel']);
+        jQuery('#' + id).attr('title', data[0]['pLabel']['value'] + ' (' + data[0]['pDescription']['value'] + ') ' + PROPERTIES[column]['originalLabel']);
 
-        jQuery('#' + id).text(properties[column]['p']);
+        jQuery('#' + id).text(PROPERTIES[column]['p']);
     } else {
         jQuery('#' + id).attr('title', data[0]['itemLabel']['value'] + ' (' + data[0]['itemDescription']['value'] + ') ');
         jQuery('#' + id).attr("class", "td ok");
@@ -778,7 +860,7 @@ function changeDiv(id, targetText, targetTitle) {
         return;
     }
     if (targetText == "MODIFYALL") {
-        if (properties[parseInt(id.split('-')[1])]['type'] == "Time") {
+        if (PROPERTIES[parseInt(id.split('-')[1])]['type'] == "Time") {
             jQuery('#' + id).text(getDate(jQuery('#' + id).text()))
         }
         var targetText = prompt("Enter a new value", jQuery('#' + id).text());
@@ -792,7 +874,7 @@ function changeDiv(id, targetText, targetTitle) {
         return;
     }
     if (targetText == "MODIFYTHIS") {
-        if (properties[parseInt(id.split('-')[1])]['type'] == "Time") {
+        if (PROPERTIES[parseInt(id.split('-')[1])]['type'] == "Time") {
             jQuery('#' + id).text(getDate(jQuery('#' + id).text()))
         }
         var targetText = prompt("Enter a new value", jQuery('#' + id).text());
@@ -848,7 +930,7 @@ function checkEquals(id, targetText = "", surceText="") {
     targetClass = jQuery('#' + id).attr('class');
     targetValue = jQuery('#' + id).attr('value');
     for (row = 1; row < jQuery('.tr').length; row++) {
-        for (column = 0; column < properties.length; column++) {
+        for (column = 0; column < PROPERTIES.length; column++) {
             if (jQuery('#' + row + '-' + column).text() == sourceText) {
 				jQuery('#' + row + '-' + column).text(targetText);
                 jQuery('#' + row + '-' + column).attr('title', targetTitle);
@@ -861,6 +943,7 @@ function checkEquals(id, targetText = "", surceText="") {
 
 
 function checkType(id) {
+	// Determinates if the value of a statement is correponding to the property type
     if (['td hide', 'td create'].indexOf(jQuery('#' + id).attr('class')) > -1) {
         return true;
     }
@@ -871,12 +954,12 @@ function checkType(id) {
     column = id.split("-")[1];
     row = id.split("-")[0];
     text = jQuery('#' + id).text();
-    type = properties[column]['type'];
+    type = PROPERTIES[column]['type'];
     check = false;
-    if (LABELS.indexOf(properties[column]['originalLabel']) > -1) {
+    if (LABELS.indexOf(PROPERTIES[column]['originalLabel']) > -1) {
         type = 'String';
     }
-    if (properties[column]['originalLabel'] == 'item') {
+    if (PROPERTIES[column]['originalLabel'] == 'item') {
         type = 'WikibaseItem';
     }
     if (row == 0) {
@@ -1025,7 +1108,8 @@ function saveState(){
 
 function loadState(){
 		csvdata=false;
-		jQuery('#output').html(inputCSV());
+		//jQuery('#output').html(inputCSV());
+		jQuery('#output').html(jQuery('#output2 textarea').text());
 		jQuery('div').each(function(){
 			console.log(jQuery(this).text());
 			regex=/^[0-9]+-[0-9]+$/g

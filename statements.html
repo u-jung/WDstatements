@@ -6,7 +6,7 @@
 
 
 <head>
-	<title>unbenannt</title>
+	<title>WDstatements</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<meta name="generator" content="Geany 1.27" />
@@ -62,6 +62,29 @@
 		color:#ccc;
 	}
 	
+	#output2{
+		/*display:none;*/
+		background-color:light-grey;
+		/*border:solid 1px grey;*/
+		height:5px;
+	}
+	
+	#output2::before{
+		content:"";
+	}
+	#counter::before{
+		content:"Cells still to check: ";
+		font-weight:normal;
+		color:green;
+	}
+	
+	#counter{
+		font-weight:bold;
+		margin-top:10px;
+		border: solid 1px grey;
+		padding: 5px;
+		width: 200px;
+	}
 	#popup{
 		display:none;
 		min-height:300px;
@@ -93,20 +116,60 @@
   width: 600px;
   height: 100%;
 }
+
+
+
 	
+	
+	
+.upload-btn-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.btn {
+  border: 2px solid gray;
+  color: gray;
+  background-color: white;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top:5px;
+}
+
+
+.upload-btn-wrapper input[type=file] {
+  font-size: 100px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
 	</style>
 </head>
 
 <body>
 	
-	<input type='file' id="file-input" accept='text/plain' >
-	<input type="submit" value="Insert from clipboard" id="clipboard"> 
-	<input type="submit" value="Start output for QuickStatements" id="start-output"> 
-	<input type="submit" value="Save State" id="save"> 
-	<div id="counter"></div>
+	<div class="buttons">
+	<input type="submit" value="Insert from clipboard" id="clipboard" class="btn"> 
+	<input type="submit" value="Start output for QuickStatements" id="start-output" class="btn"> 
+	<!--<input type="submit" value="Save State" id="save" class="btn"> -->
+	<input type="submit" value="Go to QuickStatements" id="quickstatements" class="btn"> 
+	</div>
+	
+	<div class="upload-btn-wrapper">
+	  <button class="btn">Upload a file</button>
+	  <input type="file" name="myfile" id="file-input" />
+	</div>
+		
+	<div id="counter" class="btn"></div>
 	<br>
-    <div id='output' class="table">
-    ...
+	<div id="output2" ></div>
+	<br>
+    <div id='output' class="table btn">
+    
     </div>
     <div id='popup'></div>
     </body>
