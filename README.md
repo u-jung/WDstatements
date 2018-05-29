@@ -72,13 +72,14 @@ You can download the example (example.csv).
 |Arthur Dent  |fiktiver Mensch|                                    |         |            |                                        |           |          |                       |                              |                                                           |
 
 After clicking the button "Start output for QuickStatements" you will see the result string as follows.:
-`Q42	P31	Q5	S248	Q54919	S214	"113230702"
+```
+Q42	P31	Q5	S248	Q54919	S214	"113230702"
 Q42	P569	+1952-03-11T00:00:00Z/11	S854	"http://data.bnf.fr/ark:/12148/cb1188092r"
 Q42	P26	Q14623681	P580	+1991-11-25T00:00:00Z/11
 Q42	P69	Q609646	S248	Q5375741
 Q42	P69	Q35794	S854	"http://www.screenonline.org.uk/people/id/1233876/index.html"
 Q613901	P31	Q15632617
-`
+```
 
 Your input file may have lots of lines.
 But it would be better for you to not insert more than 200 to 400 lines at one time. Otherwise you my soon be boored of all this items you need to confirm.  This could be the moment where error will come for sure.
