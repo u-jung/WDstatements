@@ -20,6 +20,7 @@
  * 
  * 
  */
+"use strict";
 var PROPERTIES = [];
 var objects = {};
 var csvArr = [];
@@ -37,13 +38,13 @@ var CELLS = [];
 var numberOfStatements = 0;
 var fillDivEnded = false;
 var PROPOSED_LIMIT=100;
-csvdata = true;
-console.log("ok");
+var csvdata = true;
+var FIRSTCHECK;
+
 
 jQuery(document).ready(function() {
     jQuery("body").on('change', '#file-input', function() {
         jQuery('#output').html("");
-        console.log(document.getElementById("file-input").files);
         readCSV()
     });
     jQuery("body").on('click', '#quickstatements', function() {
@@ -63,22 +64,17 @@ jQuery(document).ready(function() {
     jQuery('#showstatement').on("click",function(){
 		if (jQuery("#statement").css("display")=="none"){
 			jQuery("#statement").css("display","block");
-			
 		}
 		else{
 			jQuery("#statement").css("display","none");
-		
 		}
-	
-	
 	});
     
     jQuery("#popup").on("click", function(){
 		jQuery('#popup').css("display","none");
-		});
+	});
     
     jQuery("body").on('click', '#clipboard', function() {
-		
 		jQuery("#start-output").css("visibility","visible");
 		//jQuery("#start-output").css("display","block");
         if (jQuery('#output2 textarea').length == 0) {
@@ -95,7 +91,7 @@ jQuery(document).ready(function() {
 			jQuery('#clipboard').css('visibility','hidden');
             if (jQuery('#output2 textarea').val().slice(0, 1) == "[") {
 
-                text = processJSON(JSON.parse(jQuery('#output2 textarea').val()));
+                var text = processJSON(JSON.parse(jQuery('#output2 textarea').val()));
                 fillDIV();
                 jQuery('#output2 textarea').remove();
                 return;
@@ -115,7 +111,7 @@ jQuery(document).ready(function() {
             if (csvdata) {
 
                 text = jQuery('#output2 textarea').val();
-                ORIGINAL_TEXT=text;
+                var ORIGINAL_TEXT=text;
                 //text = text.replace(/,/g, ';');
                 //text = text.replace(/\t/g, ',');
                 processData(text);
@@ -149,13 +145,12 @@ jQuery(document).ready(function() {
 
 //fills the table with colored data
 function fillDIV() {
-    header = ""
+    var header = ""
     FIRSTCHECK=true;
-    console.log("enter fillDIV");
     jQuery('.table').off('click');
-    for (j = 0; j < csvArr.length; j++) {
-        row = ""
-        for (i = 0; i < csvArr[0].length; i++) {
+    for (var j = 0; j < csvArr.length; j++) {
+        var row = ""
+        for (var i = 0; i < csvArr[0].length; i++) {
             if (j == 0) {
                 row += '<div class="td header" id="' + j + '-' + i + '">' + csvArr[j][i] + '</div>';
                 PROPERTIES.push({
@@ -166,7 +161,6 @@ function fillDIV() {
                     PROPERTIES[i]["type"] = "String";
                 }
             } else {
-                console.log(csvArr[j][i]);
                 if (csvArr[j][i] == undefined) {
                     csvArr[j][i] == "", console.log("changed");
                 };
@@ -195,13 +189,13 @@ function fillDIV() {
 
 function startOutput() {
 	
-    checkError = [];
-    createList = [];
-    createStr = "";
-    createArr = []
-    for (row = 1; row < csvArr.length; row++) {
-        for (column = 0; column < csvArr[0].length; column++) {
-            check = checkType(row + '-' + column);
+    var checkError = [];
+    var createList = [];
+    var createStr = "";
+    var createArr = []
+    for (var row = 1; row < csvArr.length; row++) {
+        for (var column = 0; column < csvArr[0].length; column++) {
+            var check = checkType(row + '-' + column);
             if (check == true) {
             } else {
                 checkError.push(row + '-' + column);
@@ -219,7 +213,6 @@ function startOutput() {
         if (checkError.length>PROPOSED_LIMIT){
 			alert("By the way,\n" + checkError.length + "cells! That's a lot! Are you sure you will have enough force?\n Maybe it's better to split the imported data into some handy parts and restart"); 
 		}
-        console.log("Non conform cells");
         for (id = 0; id < checkError.length; id++) {
             console.log(checkError[id], jQuery('#' + checkError[id]).text(), ' in row: ', jQuery('#' + checkError[id].split('-')[0] + '-0').text(), "  property: ", jQuery('#0-' + checkError[id].split('-')[1]).text());
         }
@@ -230,7 +223,7 @@ function startOutput() {
 
         alert("You need to create " + createList.length + " secondary items (the blue ones). You can copy the content of the next window and replace the dummies\nProcess cancelled");
         jQuery('#output2').css("visibility","visible");
-        for (id = 0; id < createList.length; id++) {
+        for (var id = 0; id < createList.length; id++) {
             createStr += "CREATE\n";
             createStr += 'LAST\tL'+LANGAUGE+'\t"' + quote(jQuery('#' + createList[id]).text(), createList[id].split('-')[1]) + '"\n';
             createStr += 'LAST\tD'+LANGAUGE+'\t"BESCHREIBUNG"\n';
@@ -247,24 +240,24 @@ function startOutput() {
     }
 
     createStr = "";
-    regex = /^S[0-9]*$/g
-    for (row = 1; row < csvArr.length; row++) {
-        subject = jQuery('#' + row + '-0').text();
+    var regex = /^S[0-9]*$/g
+    for (var row = 1; row < csvArr.length; row++) {
+        var subject = jQuery('#' + row + '-0').text();
         if (jQuery('#' + row + '-0').attr('class') == 'td hide') {
             break;
         }
         if (jQuery('#' + row + '-0').attr('class') == 'td create') {
             createStr += "CREATE\n";
-            createStr += "LAST\tL"+LANGAUGE+"\t" + quote(jQuery('#' + row + '-0').text(), -1) + "\n";
+            createStr += "LAST\tL"+LANGUAGE+"\t" + quote(jQuery('#' + row + '-0').text(), -1) + "\n";
             subject = 'LAST';
 
-            createArr.push([jQuery('#' + row + '-0').text(), "LAST\tL"+LANGAUGE+"\t" + quote(jQuery('#' + row + '-0').text(), -1)]);
+            createArr.push([jQuery('#' + row + '-0').text(), "LAST\tL"+LANGUAGE+"\t" + quote(jQuery('#' + row + '-0').text(), -1)]);
 
         }
-        for (pi = 1; pi < PROPERTIES.length; pi++) {
+        for (var pi = 1; pi < PROPERTIES.length; pi++) {
             console.log(PROPERTIES.length, PROPERTIES[pi]['parent'], regex.test(PROPERTIES[pi]['originalLabel']), pi);
             if ((PROPERTIES[pi]['parent'] == '') && (!(regex.test(PROPERTIES[pi]['originalLabel'])))) {
-                objStr = getObject(subject, row, PROPERTIES[pi]['p']);
+                var objStr = getObject(subject, row, PROPERTIES[pi]['p']);
                 createStr += objStr
                 if (objStr != "") {
                     createArr.push([jQuery('#' + row + '-0').text(), getObject(subject, row, PROPERTIES[pi]['p'])]);
@@ -275,7 +268,7 @@ function startOutput() {
     }
 
     console.log(createArr);
-    uStr = sortCreateArr(createArr);
+    var uStr = sortCreateArr(createArr);
     uStr = uStr.replace(/CREATE\nQ/gm, "Q");
     jQuery("#output2Label").html('<strong>This is the result string. Copy and paste the content into QuickStatements</strong>');
     jQuery('#output2').css("visibility","visible");
@@ -288,13 +281,13 @@ function startOutput() {
 
 
 function fillStatement(id){
-	row=parseInt(id.split("-")[0]);
-	column=parseInt(id.split("-")[1])
+	var row=parseInt(id.split("-")[0]);
+	var column=parseInt(id.split("-")[1])
 	if(row==0){
 		return;
 	}
-	s=jQuery('#'+row+'-0').attr("title");
-	o=jQuery('#'+row+'-'+column).attr("title");
+	var s=jQuery('#'+row+'-0').attr("title");
+	var o=jQuery('#'+row+'-'+column).attr("title");
 	if (typeof s === "undefined"){
 		s= jQuery('#'+row+'-0').text()
 	}
@@ -304,11 +297,11 @@ function fillStatement(id){
 	if (typeof o === "undefined"){
 		o= "";
 	} 
-	parent="";
+	var parent="";
 	if (PROPERTIES[column]['parent']!=""){
 		parent=" (AS SOURCE OR QUALIFIER IN ⇒ " + getPropertyLabel(PROPERTIES[column]['parent']) + ")";
 	}
-	p=getPropertyLabel(PROPERTIES[column]['p']) + parent;
+	var p=getPropertyLabel(PROPERTIES[column]['p']) + parent;
 	jQuery('#subject').text(s);
 	//jQuery('#predicate').text(jQuery('#'+'0-'+column).attr("title"));
 	jQuery('#predicate').text(p);
@@ -317,12 +310,12 @@ function fillStatement(id){
 
 function getPropertyLabel(property){
 	//console.log(property);
-	ALDtest=/[A|L|D][a-z]{2}/;
-	p=property;
+	var ALDtest=/[A|L|D][a-z]{2}/;
+	var p=property;
 	if (property=="item" || typeof property ==="undefined"){
 		return "item";
 	}
-	for (i=0;i<PROPERTIES.length;i++){
+	for (var i=0;i<PROPERTIES.length;i++){
 		//console.log(PROPERTIES[i]['p'],property)
 		if (PROPERTIES[i]['p']==property){
 			//console.log(property);
@@ -342,15 +335,15 @@ function getPropertyLabel(property){
 }
 
 function sortCreateArr(createArr) {
-    uStr = "";
-    lastItem = [];
+    var uStr = "";
+    var lastItem = [];
     //createArr.sort(function(a, b) {
         //return a[0] - b[0];
     //});
     createArr.sort();
     //createArr=sortArr(createArr,0);
     console.log(createArr);
-    for (n = 0; n < createArr.length; n++) {
+    for (var n = 0; n < createArr.length; n++) {
         if (createArr[n][0] != lastItem[0]) {
             lastItem = createArr[n];
             if (createArr[n][1].slice(0, 5) != "LAST") {
@@ -368,38 +361,21 @@ function sortCreateArr(createArr) {
     return uStr;
 }
 
-function sortArr(arr,index){
-	var x=[];
-	for (i=0;i<arr.Length;i++){
-		for (j=0;j<arr.Length;j++){
-			if(arr[i][index]>arr[j][index]){
-				x=arr[i];
-				arr[i]=arr[j];
-				arr[j]=x;
-			}
-			
-			
-		}
-		
-	}
-	return arr;
-	
-}
+
 
 function orderCreateArr(createArr) {
-	console.log(createArr);
-    tmpArr = [];
-    skip = false;
-    lastSubject = "";
+    var tmpArr = [];
+    var skip = false;
+    var lastSubject = "";
 
-    for (i = 0; i < createArr.length; i++) {
+    for (var i = 0; i < createArr.length; i++) {
         if (createArr[i] == "CREATE") {
             item = getLde(createArr, i);
             console.log(item);
             pos = isInTmpArr(tmpArr, i, item);
             console.log(pos);
             if (pos > -1) {
-                for (m = i + 1; m < createArr.length; m++) {
+                for (var m = i + 1; m < createArr.length; m++) {
                     if (createArr[m].slice(0, 5) != "LAST") {
                         tmpArr.splice(pos, 0, createArr[m]);
                         skip = true;
@@ -431,7 +407,7 @@ function removeDuplicates(tmpArr) {
 }
 
 function isInTmpArr(tmpArr, i, item) {
-    pos = -1;
+    var pos = -1;
     for (k = 0; k < tmpArr.length; k++) {
         if (item.slice(0, 8) == "LAST\tLde") {
             if (item == tmpArr[k]) {
@@ -471,8 +447,7 @@ function getLde(createArr, i) {
 }
 
 function getObject(subject, row, p) {
-    console.log('getObject', subject, row, p);
-    for (i = 1; i < PROPERTIES.length; i++) {
+    for (var i = 1; i < PROPERTIES.length; i++) {
         if (PROPERTIES[i]['p'] == p) {
             if (jQuery('#' + row + '-' + i).attr('class') == 'td ok') {
                 if (jQuery('#' + row + '-' + i).text() != "") {
@@ -488,23 +463,21 @@ function getObject(subject, row, p) {
 
 function addChildren(row, i) {
     console.log('addChildren', row, i);
-    returnStr = "";
-    source_statement_arr = [];
+    var returnStr = "";
+    var source_statement_arr = [];
     if ('children' in PROPERTIES[i]) {
-        parent = PROPERTIES[i]['p'];
-        for (child = 0; child < PROPERTIES[i]['children'].length; child++) {
-            console.log('has children');
-            for (j = 1; j < PROPERTIES.length; j++) {
+        var parent = PROPERTIES[i]['p'];
+        for (var child = 0; child < PROPERTIES[i]['children'].length; child++) {
+            for (var j = 1; j < PROPERTIES.length; j++) {
 
                 if (PROPERTIES[j]['p'].slice(1) == PROPERTIES[i]['children'][child].slice(1)) {
-                    console.log('found the child');
                     if (PROPERTIES[j]['parent'] != "") {
 
                         if (PROPERTIES[j]['parent'] == parent) {
-                            console.log('child has parent');
+                            
                             if ((jQuery('#' + row + '-' + i).text() != "") && (jQuery('#' + row + '-' + i).attr('class') == 'td ok')) {
                                 if (jQuery('#' + row + '-' + j).text() != "") {
-                                    console.log(returnStr.split('\t'), PROPERTIES[i]['children'][child]);
+                                   
                                     if (returnStr.split('\t').indexOf(PROPERTIES[i]['children'][child]) == -1) {
                                         returnStr += '\t' + PROPERTIES[i]['children'][child] + '\t' + quote(jQuery('#' + row + '-' + j).text(), j);
                                     }
@@ -561,17 +534,15 @@ function checkCells() {
 	LANGUAGE=jQuery('#lang').val().toLowerCase();
 	jQuery('#output2').css('visibility','visible');
 	jQuery('#output2').html("The script is now checking each cell! <br>It might be a good time to make yourself a cup of coffee.");
-    k = 0;
-    numberOfStatements = 0
+    var k = 0;
+    var numberOfStatements = 0
     counter = (csvArr.length * csvArr[0].length) - 1;
-    for (j = 0; j < csvArr.length; j++) {
-        for (col = 0; col < csvArr[0].length; col++) {
-			console.log(jQuery('#' + j + '-' + col).text(), j,"-",col);
+    for (var j = 0; j < csvArr.length; j++) {
+        for (var col = 0; col < csvArr[0].length; col++) {
 			if (jQuery('#' + j + '-' + col).text().toUpperCase() == 'LAST' && j>1 && col==0){
 				jQuery('#' + j + '-' + col).text(jQuery('#' + (j-1) + '-' + col).text());
 			}
             if (jQuery('#' + j + '-' + col).text() == 'undefined') {
-				console.log(j, "-",col ," undefinded ");
                 jQuery('#' + j + '-' + col).text("");
                 jQuery('#' + j + '-' + col).attr("alt", "");
             } else {
@@ -579,10 +550,7 @@ function checkCells() {
                     numberOfStatements += 1;
                 }
             }
-            console.log(k++);
-            
-
-            regex = /^Q[0-9]+$/g
+            var regex = /^Q[0-9]+$/g
             if (regex.test(jQuery('#' + j + '-' + col).text()) != false) {
                 jQuery('#' + j + '-' + col).attr("class", "td ok");
             }
@@ -595,7 +563,7 @@ function checkCells() {
                 if (j > 0 && jQuery('#' + j + '-' + col).attr('class').indexOf('ok') > -1) {
                     //continue;
                 }
-				console.log("lookup");
+				
 				if (j>0){
 					lookup(j + '-' + col, jQuery('#'+j + '-' + col).text());
 				}
@@ -606,7 +574,7 @@ function checkCells() {
             jQuery('#counter').text(counter--);
 
             confirmExec(j + '-' + col);
-            console.log(jQuery('#' + j + '-' + col).text(), j,"-",col);
+            
         }
     }
     
@@ -693,9 +661,9 @@ function processData(icd10Codes) {
 function csv2data(text,delimiter){
 	var arr=text.split('\n');
 	var csvArr=[];
-	for (i=0; i<arr.length;i++){
+	for (var i=0; i<arr.length;i++){
 		var tmp=arr[i].split(delimiter)
-		for (j=0;j<tmp.length;j++){
+		for (var j=0;j<tmp.length;j++){
 			
 			tmp[j]=$.trim(tmp[j])
 			
@@ -719,7 +687,7 @@ function processJSON(jsonArr) {
     nextCsvLine = 1;
     item = ""
     console.log(jsonArr.length);
-    for (i = 0; i < jsonArr.length; i++) {
+    for (var i = 0; i < jsonArr.length; i++) {
         console.log(jsonArr[i]);
         csvArr[nextCsvLine] = [];
         jQuery.each(jsonArr[i], function(k, v) {
@@ -758,7 +726,7 @@ function processJSON(jsonArr) {
 }
 
 function getColumn(property) {
-    for (j = 0; j < csvArr[0].length; j++) {
+    for (var j = 0; j < csvArr[0].length; j++) {
         if (csvArr[0][j] == property) {
             return j;
         }
@@ -808,26 +776,21 @@ function lookup(id, searchTerm = "", popupContent = "") {
 		console.log (id, " is Q");
 		//return
 	}
-    query = ""
+    var query = ""
 
-    column = id.split("-")[1];
-    row = parseInt(id.split("-")[0]);
-    //if (searchTerm=="" && row>0 ){
-		//searchTerm=jQuery("#"+id).text();
-	//}
-    console.log('lookup', id, searchTerm, popupContent);
+    var column = id.split("-")[1];
+    var row = parseInt(id.split("-")[0]);
     if (searchTerm.length > 0) {
         searchTerm = searchTerm.split(" ").join(" ");
-        base_url = 'https://www.wikidata.org/w/api.php?format=json&action=wbsearchentities&search=' + encodeURI(searchTerm) + '&limit=50&language=' + LANGUAGE + '&uselang=' + LANGUAGE + '&origin=*';
+        var base_url = 'https://www.wikidata.org/w/api.php?format=json&action=wbsearchentities&search=' + encodeURI(searchTerm) + '&limit=50&language=' + LANGUAGE + '&uselang=' + LANGUAGE + '&origin=*';
         url = base_url;
     } else {
-        base_url = 'https://query.wikidata.org/sparql';
+        var base_url = 'https://query.wikidata.org/sparql';
         if (row == 0) {
-            pArr = csvArr[0][column].split(".");
-            console.log(pArr);
+            var pArr = csvArr[0][column].split(".");
             if (pArr.length > 1) {
                 PROPERTIES[column]['parent'] = pArr[0];
-                for (k = 0; k < PROPERTIES.length; k++) {
+                for (var k = 0; k < PROPERTIES.length; k++) {
                     console.log(PROPERTIES[k]['originalLabel'], pArr[0]);
                     if (PROPERTIES[k]['originalLabel'] == pArr[0] || PROPERTIES[k]['p'] == pArr[0]) {
                         if (!('children' in PROPERTIES[k])) {
@@ -841,8 +804,8 @@ function lookup(id, searchTerm = "", popupContent = "") {
             } else {
                 PROPERTIES[column]['parent'] = "";
             }
-            p = pArr[pArr.length - 1]
-            regex = /^[P|S][0-9]*$/g
+            var p = pArr[pArr.length - 1]
+            var regex = /^[P|S][0-9]*$/g
             if (regex.test(p) == true) {
                 if (p.slice(0, 1) == "S") {
                     PROPERTIES[column]['source'] = true;
@@ -874,8 +837,8 @@ function lookup(id, searchTerm = "", popupContent = "") {
 
         } else {
 
-            regex = /^Q[0-9]*$/g
-            test = regex.test(csvArr[row][column]);
+            var regex = /^Q[0-9]*$/g
+            var test = regex.test(csvArr[row][column]);
             if (test == true) {
                 test = csvArr[row][column] in objects;
 				console.log(test);
@@ -894,14 +857,13 @@ function lookup(id, searchTerm = "", popupContent = "") {
             }
         }
 
-        url = base_url + "?format=json&query=" + encodeURI(query);
+        var url = base_url + "?format=json&query=" + encodeURI(query);
     }
 
-    newQuery = true;
+    var newQuery = true;
     if (requery) {} else {
         requery = false;
-        for (i = 0; i < QUERIES.length; i++) {
-            //console.log(QUERIES[i] == url);
+        for (var i = 0; i < QUERIES.length; i++) {
             if (QUERIES[i][0] == url) {
                 newQuery = false;
                 console.log(id, " from QUERIES");
@@ -977,22 +939,21 @@ function isLabel(text){
 
 
 function WdResponse(data, id, searchTerm) {
-    console.log(data, id, searchTerm);
-    column = id.split("-")[1];
-    row = parseInt(id.split("-")[0]);
+    var column = id.split("-")[1];
+    var row = parseInt(id.split("-")[0]);
     console.log(data, searchTerm, row, column);
-    sourceText = jQuery('#' + row + '-' + column).text();
+    var sourceText = jQuery('#' + row + '-' + column).text();
 
     if (searchTerm.length > 0) {
     
         jQuery('#choice').off;
-        for (i = 0; i < data.length; i++) {
-            snippet = '<strong title="' + data[i]['title'] + '" alt="'+data[i]['description']+'">' + data[i]['label'] + ' </strong>(<a href="' + data[i]['concepturi'] + '" target="_blank">' + data[i]['title'] + "</a>)<i> -> " + data[i]['description'] + "</i>  ";
+        for (var i = 0; i < data.length; i++) {
+            var snippet = '<strong title="' + data[i]['title'] + '" alt="'+data[i]['description']+'">' + data[i]['label'] + ' </strong>(<a href="' + data[i]['concepturi'] + '" target="_blank">' + data[i]['title'] + "</a>)<i> -> " + data[i]['description'] + "</i>  ";
             jQuery('#choice').append(jQuery('<li/>').html(snippet)).css('color', 'black');
         };
 
         console.log(data.length);
-        html = jQuery('#popup').html();
+        var html = jQuery('#popup').html();
         jQuery('#' + id).attr('value', html);
         if (data.length == 0) {
             changeDiv(id, "CREATE", "");
@@ -1012,20 +973,20 @@ function WdResponse(data, id, searchTerm) {
         if (column == 0) {
             PROPERTIES[column]['type'] = "WikibaseItem";
         }
-        PROPERTIES[column]['pLabel'] = data[0]['pLabel']['value'];
-        PROPERTIES[column]['p'] = data[0]['p']['value'].replace("http://www.wikidata.org/entity/", "");
-        type = data[0]['pType']['value'];
+        //if (! typeof data[0] === undefined){
+			PROPERTIES[column]['pLabel'] = data[0]['pLabel']['value'];
+			PROPERTIES[column]['p'] = data[0]['p']['value'].replace("http://www.wikidata.org/entity/", "");
+			var type = data[0]['pType']['value'];
 
-        PROPERTIES[column]['type'] = type.replace("http://wikiba.se/ontology#", "");
-        if (regex.test(csvArr[0][column]) == true) {
-            jQuery('#' + id).attr('title', data[0]['pLabel']['value'] + ' (' + data[0]['pDescription']['value'] + ') ' + PROPERTIES[column]['originalLabel']);
+			PROPERTIES[column]['type'] = type.replace("http://wikiba.se/ontology#", "");
+			/*if (regex.test(csvArr[0][column]) == true) {
+				jQuery('#' + id).attr('title', data[0]['pLabel']['value'] + ' (' + data[0]['pDescription']['value'] + ') ' + PROPERTIES[column]['originalLabel']);
 
-        } else {}
-        jQuery('#' + id).attr('title', data[0]['pLabel']['value'] + ' (' + data[0]['pDescription']['value'] + ') ' + PROPERTIES[column]['originalLabel']);
-
-        jQuery('#' + id).text(PROPERTIES[column]['p']);
+			} else {}*/
+			jQuery('#' + id).attr('title', data[0]['pLabel']['value'] + ' (' + data[0]['pDescription']['value'] + ') ' + PROPERTIES[column]['originalLabel']);
+			jQuery('#' + id).text(PROPERTIES[column]['p']);
+		//}
     } else {
-		console.log(jQuery('#'+id).text(), sourceText);
         jQuery('#' + id).attr('title', data[0]['itemLabel']['value'] + ' (' + data[0]['itemDescription']['value'] + ') ');
         jQuery('#' + id).attr("class", "td ok");
         checkEquals(id, jQuery('#' + id).text(), sourceText);
@@ -1047,7 +1008,7 @@ function toogleCreateStringButtonColor(){
 function changeDiv(id, targetText, targetTitle, targetDescription) {
 	toogleCreateStringButtonColor();
     console.log(id, "|", targetText, "|", targetTitle);
-    sourceText = jQuery('#' + id).text();
+    var sourceText = jQuery('#' + id).text();
     jQuery('#popup').css("display", 'none');
     if (targetText == "HIDE") {
         jQuery('#' + id).attr('class', 'td hide');
@@ -1121,20 +1082,18 @@ function changeDiv(id, targetText, targetTitle, targetDescription) {
 
 	//Makes sure to ask if an existing Description should be overwritten
 function checkDescription(id,targetDescription){
-		console.log("Enter cD");
-		column=parseInt(id.split('-')[1]);
-		row=parseInt(id.split('-')[0]);
+		var column=parseInt(id.split('-')[1]);
+		var row=parseInt(id.split('-')[0]);
 		if (column!=0){
 			return
 		}
 		if (typeof targetDescription === 'undefined'){
-			console.log("ud");
 			return;
 		}
 
 		//check if there is a Column with originalLabel "D"+Language
-		DColumn=0;
-		for (i=1; i<PROPERTIES.length; i++){
+		var DColumn=0;
+		for (var i=1; i<PROPERTIES.length; i++){
 			if (PROPERTIES[i]['originalLabel']=="D"+LANGUAGE){
 				DColumn = i
 				break
@@ -1142,38 +1101,33 @@ function checkDescription(id,targetDescription){
 		}
 		//check if any Description is given for this item
 		if (DColumn!=0){
-			DCells=[];
-			item=jQuery("#"+id).text();
-			console.log(csvArr.length)
-			for (i=1; i<csvArr.length;i++){
+			var DCells=[];
+			var item=jQuery("#"+id).text();
+			for (var i=1; i<csvArr.length;i++){
 				if (jQuery("#"+i+"-0").text()==item){
-					console.log("found in row" + i);
-					DColumnId="#"+i+"-"+DColumn;
-					console.log(DColumnId);
+					var DColumnId="#"+i+"-"+DColumn;
 					if(jQuery(DColumnId).text().length>0){
-						message="You describe the item " +item+ " as «"+ jQuery(DColumnId).text() + "». \n\
+						var message="You describe the item " +item+ " as «"+ jQuery(DColumnId).text() + "». \n\
 Meanwhile there is already the description «"+targetDescription+"» stored inside Wikidata. \n\
-Do you really want to change the description? \n(Press «Cancel» if not.)"
-						if (!confirm(message)){
+We will not change the existing description? \n(However, press «Cancel» if you want to change the description.)"
+						if (confirm(message)){
 								jQuery(DColumnId).attr("class","td hide");
 							};
 					};
 				}
 			}
-			console.log("exit for");
 		}
 	}
 
 function checkEquals(id, targetText = "", sourceText = "") {
 	console.log(id, targetText , sourceText);
 	// search and replace same occurance of modified cell
-    targetTitle = jQuery('#' + id).attr("title");
-    targetClass = jQuery('#' + id).attr('class');
-    targetValue = jQuery('#' + id).attr('value');
-    column=parseInt(id.split("-")[1]);
-    for (row = 1; row < jQuery('.tr').length; row++) {
+    var targetTitle = jQuery('#' + id).attr("title");
+    var targetClass = jQuery('#' + id).attr('class');
+    var targetValue = jQuery('#' + id).attr('value');
+    var column=parseInt(id.split("-")[1]);
+    for (var row = 1; row < jQuery('.tr').length; row++) {
         //for (column = 0; column < PROPERTIES.length; column++) {
-			console.log(row, column, jQuery("#" + row + '-' + column).text());
             if (jQuery('#' + row + '-' + column).text() == sourceText) {
                 jQuery('#' + row + '-' + column).text(targetText);
                 jQuery('#' + row + '-' + column).attr('title', targetTitle);
@@ -1193,11 +1147,11 @@ function checkType(id) {
         jQuery('#' + id).attr('class', 'td hide');
         return true;
     }
-    column = id.split("-")[1];
-    row = id.split("-")[0];
-    text = jQuery('#' + id).text();
-    type = PROPERTIES[column]['type'];
-    check = false;
+    var column = id.split("-")[1];
+    var row = id.split("-")[0];
+    var text = jQuery('#' + id).text();
+    var type = PROPERTIES[column]['type'];
+    var check = false;
     if (LABELS.indexOf(PROPERTIES[column]['originalLabel']) > -1) {
         type = 'String';
     }
@@ -1207,6 +1161,7 @@ function checkType(id) {
     if (row == 0) {
         return false;
     }
+    var regex
     switch (type) {
         case 'WikibaseItem':
             regex = /^Q[0-9]*$/g
@@ -1219,7 +1174,7 @@ function checkType(id) {
                 check = true;
                 break;
             }
-            ISO = false;
+            var ISO = false;
             regex = /^[0-9|\+|Z|\/|-|T|:]*$/;
             if (regex.test(text) == true) {
                 check = true;
@@ -1243,9 +1198,9 @@ function checkType(id) {
                     textArr.unshift(text.slice(9, 11));
                 };
             } else {
-                textArr = text.split(/\.|\//);
+                var textArr = text.split(/\.|\//);
             }
-            precision = textArr.length + 8;
+            var precision = textArr.length + 8;
             switch (precision) {
                 case 9:
                     time = '+' + textArr[0] + '-00-00T00:00:00Z/09';
@@ -1263,7 +1218,7 @@ function checkType(id) {
                     if (textArr[1].length == 1) {
                         textArr[1] = '0' + textArr[1];
                     }
-                    time = '+' + textArr[2] + '-' + textArr[1] + '-' + textArr[0] + 'T00:00:00Z/11';
+                    var time = '+' + textArr[2] + '-' + textArr[1] + '-' + textArr[0] + 'T00:00:00Z/11';
                     break;
             }
             if (time.length != 24) {
