@@ -244,7 +244,7 @@ function startOutput() {
     for (var row = 1; row < csvArr.length; row++) {
         var subject = jQuery('#' + row + '-0').text();
         if (jQuery('#' + row + '-0').attr('class') == 'td hide') {
-            break;
+            continue;
         }
         if (jQuery('#' + row + '-0').attr('class') == 'td create') {
             createStr += "CREATE\n";
@@ -1109,7 +1109,7 @@ function checkDescription(id,targetDescription){
 					if(jQuery(DColumnId).text().length>0){
 						var message="You describe the item " +item+ " as «"+ jQuery(DColumnId).text() + "». \n\
 Meanwhile there is already the description «"+targetDescription+"» stored inside Wikidata. \n\
-We will not change the existing description? \n(However, press «Cancel» if you want to change the description.)"
+We will not change the existing description. \n(However, press «Cancel» if you want to change the description.)"
 						if (confirm(message)){
 								jQuery(DColumnId).attr("class","td hide");
 							};
