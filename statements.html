@@ -313,6 +313,7 @@
 
 <a name="help"></a><h1>The help section</h1>
 <p><strong>Disclaimer:</strong> Sorry, this is not the nicest piece of code. However it seems to work. Feel free to improve.</p>
+<p><i style="font-size:1.5em; font-weight:bold; color:grey">Even if the result of the calculations from this script itself is absolutely harmless, its unchecked transfer to QuickStatements can lead to incorrect entries in Wikidata. Therefore, please <u>check the data</u> before you continue to use it.</i></p>
 <hr>
 <h1><a id="WDstatements_4"></a>WDstatements</h1>
 <h2><a id="What_is_this_5"></a>What is this?</h2>
@@ -381,18 +382,19 @@ For the instance this tool do not check if a quantity statement will be correct.
 <li>If more than 100 cells remain in red, you will kindly be asked to split you data into handy parts. The reason for this is that there will be no “save the work” option if you become tired some hours later.</li>
 <li>You will now see cells in different colors.
 <ul>
-<li>Green: The cell is ready. There is nothing more to do.</li>
-<li>Red: The tool has found some WikibaseItems which could match the label. Left click on the label to select the right one!
+<li><strong style="color:green">Green</strong>: The cell is ready. There is nothing more to do.</li>
+<li><strong style="color:red">Red</strong>: The tool has found some WikibaseItems which could match the label. Left click on the label to select the right one!
 <ul>
 <li>If you don’t see a list, click on “Requery”! (The list will be visible only at the first appearance of the label)</li>
 <li>If you see your item, click on it. The label will be replaced by the item code and become green.</li>
-<li>If you can’t find your item, click on “create”!. The label color will change to blue.</li>
+<li>If you can’t find your item, click on “Create”!. The label color will change to blue.</li>
 <li>If you believe that the provided label has some errors, click on “Modify this” and change the label. After this, left click on “Requery”! You can also enter the Wikidata code of the item as a short way solution. If you use “Modify all”, all cells with the same label will be modified at the same way. Be careful with this option! There is no CRTL+Z option here.</li>
 <li>If you want to ignore the information click on “Hide”. The label color will change to grey. If you hide the item at the first column, then the entire item will be ignored. Otherwise it’s just one claim who will be ignored.</li>
+<li>If you want to restore the initial value of a cell, click on "Restore"!</li>
 </ul>
 </li>
-<li>Blue: The tool didn’t find a matching item label item. The item will be created.</li>
-<li>Hide: You decided to hide this information.</li>
+<li><strong style="color:blue">Blue</strong>: The tool didn’t find a matching item label item. The item will be created.</li>
+<li><strong style="color:grey">Grey</strong>: The statement is hidden and will be ignored.</li>
 </ul>
 </li>
 <li>Here comes your task. You will now have to change all cell labels into green, blue or grey color. Once you have finished, just click on “Start output for QuickStatements”!

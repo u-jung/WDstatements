@@ -973,7 +973,7 @@ function WdResponse(data, id, searchTerm) {
         if (column == 0) {
             PROPERTIES[column]['type'] = "WikibaseItem";
         }
-        //if (! typeof data[0] === undefined){
+        else{
 			PROPERTIES[column]['pLabel'] = data[0]['pLabel']['value'];
 			PROPERTIES[column]['p'] = data[0]['p']['value'].replace("http://www.wikidata.org/entity/", "");
 			var type = data[0]['pType']['value'];
@@ -985,7 +985,7 @@ function WdResponse(data, id, searchTerm) {
 			} else {}*/
 			jQuery('#' + id).attr('title', data[0]['pLabel']['value'] + ' (' + data[0]['pDescription']['value'] + ') ' + PROPERTIES[column]['originalLabel']);
 			jQuery('#' + id).text(PROPERTIES[column]['p']);
-		//}
+		}
     } else {
         jQuery('#' + id).attr('title', data[0]['itemLabel']['value'] + ' (' + data[0]['itemDescription']['value'] + ') ');
         jQuery('#' + id).attr("class", "td ok");
