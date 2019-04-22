@@ -536,7 +536,7 @@ function checkCells() {
 	jQuery('#output2').html("The script is now checking each cell! <br>It might be a good time to make yourself a cup of coffee.");
     var k = 0;
     var numberOfStatements = 0
-    counter = (csvArr.length * csvArr[0].length) - 1;
+    var counter = (csvArr.length * csvArr[0].length) - 1;
     for (var j = 0; j < csvArr.length; j++) {
         for (var col = 0; col < csvArr[0].length; col++) {
 			if (jQuery('#' + j + '-' + col).text().toUpperCase() == 'LAST' && j>1 && col==0){
