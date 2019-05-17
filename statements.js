@@ -173,7 +173,7 @@ function fillDIV() {
         console.log(jQuery('#output').text());
         jQuery('#output').append('<div class="tr">' + row + '</tr>');
     }
-
+	console.log("enable events")
     jQuery('.table').on('click', '.td', function(event) {
         showConfirm(event, jQuery(this).attr("id"))
     });
@@ -557,6 +557,8 @@ function checkCells() {
             if (LABELS.indexOf(csvArr[0][col]) > -1) {
                 jQuery('#' + j + '-' + col).attr("class", "td ok");
             }
+
+            
             if (PROPERTIES[col]['type'] == 'Time') {
                 //continue;
             } else {
@@ -564,7 +566,7 @@ function checkCells() {
                     //continue;
                 }
 				
-				if (j>0){
+				if (j>0 && PROPERTIES[col]['type'] == 'WikibaseItem'){
 					lookup(j + '-' + col, jQuery('#'+j + '-' + col).text());
 				}
 				else{
@@ -869,6 +871,7 @@ function lookup(id, searchTerm = "", popupContent = "") {
                 console.log(id, " from QUERIES");
                 column=parseInt(id.split("-")[1]);
                 if (QUERIES[i][1].length==0 && id.slice(0,1)!="0" && PROPERTIES[column]['type']=="WikibaseItem"){
+					console.log(id,"->","create");
 					jQuery('#'+id).attr("class","td create");
 				}
                 WdResponse(QUERIES[i][1],id,searchTerm,"");
