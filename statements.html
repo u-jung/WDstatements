@@ -56,7 +56,7 @@
 		var PROPOSED_LIMIT=100;
 		var csvdata = true;
 		var FIRSTCHECK;
-
+		var SOURCE_PROPERTIES=[854,248,304,4680,143,3452,1683]
 
 		jQuery(document).ready(function() {
 			jQuery("body").on('change', '#file-input', function() {
@@ -216,7 +216,7 @@
 					} else {
 						checkError.push(row + '-' + column);
 					}
-					if (jQuery('#' + row + '-' + column).attr('class') == 'td create') {
+					if (jQuery('#' + row + '-' + column).attr('class') == 'td create' && jQuery('#' + row + '-0').attr('class') != 'td hide' ) {
 						if (column != 0) {
 							createList.push(row + '-' + column);
 						}
@@ -828,7 +828,13 @@
 						if (p.slice(0, 1) == "S") {
 							PROPERTIES[column]['source'] = true;
 						} else {
-							PROPERTIES[column]['source'] = false;
+							if (SOURCE_PROPERTIES.indexOf(parseInt(p.slice(1,10)))>-1){
+								alert("Property "+p+" is in fact a source property. We will change it to S"+p.slice(1,10))
+								PROPERTIES[column]['source'] = true;
+							}
+							else{
+								PROPERTIES[column]['source'] = false;
+							}
 						}
 						p = p.replace("S", "P");
 						PROPERTIES[column]['pClean'] = p;
@@ -1044,8 +1050,9 @@
 					checkEquals(id, jQuery('#' + id).text(), sourceText);
 				}
 				jQuery('#' + id).attr('class', 'td nogo');
+				jQuery('#' + id).attr('value', '');
 				checkType(id);
-				confirmExec(id);
+				confirmExec(id, true);
 				return;
 			}
 			if (targetText == "MODIFYTHIS") {
@@ -1059,8 +1066,10 @@
 
 				}
 				jQuery('#' + id).attr('class', 'td nogo');
+				jQuery('#' + id).attr('value', '');
 				checkType(id);
-				confirmExec(id);
+				confirmExec(id,true);
+				
 				return;
 			}
 			if (targetText == "RESTORE") {
@@ -1186,6 +1195,7 @@
 					regex = /^Q[0-9]*$/g
 					if (regex.test(text) == true) {
 						check = true;
+						
 					}
 					break;
 				case 'Time':
@@ -1300,7 +1310,7 @@
 				jQuery('#' + id).attr('class', 'td ok');
 			} else {
 				jQuery('#' + id).attr('class', 'td nogo');
-
+				
 			}
 			return check;
 		}
