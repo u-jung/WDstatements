@@ -1,5 +1,5 @@
 
-**Disclaimer**: Sorry, this is not the nicest piece of code. However it seems to work. Feel free to improve.
+**Disclaimer**: You may better use [OpenRefine](https://openrefine.org/) for the same task.
 
 ---
 
